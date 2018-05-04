@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">E-Time</string>
+    <string name="new_timer">New Timer</string>
+    <string name="recent_timers">Recent Timers</string>
+    <string name="favorites">Favorites</string>
+    <string name="log_in">Log In</string>
 </resources>
