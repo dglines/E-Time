@@ -14,7 +14,18 @@
         android:id="@+id/content_frame"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context="edu.tacoma.uw.css.group7.e_time.MainActivity"/>
+        tools:context="edu.tacoma.uw.css.group7.e_time.MainActivity">
+
+
+        <!-- facebook -->
+        <com.facebook.login.widget.LoginButton
+            android:id="@+id/login_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="30dp"
+            android:layout_marginBottom="30dp" />
+    </FrameLayout>
 
     <!-- Container for contents of drawer - use NavigationView to make configuration easier -->
     <!-- view fot he navigation menu -->
