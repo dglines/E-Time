@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+    <group android:checkableBehavior="none">
+        <item
+            android:id="@+id/nav_new_timer"
+            android:title="@string/new_timer" />
+        <!-- android:icon="@drawable/ic_menu_camera" -->
+        <item
+            android:id="@+id/nav_recent_timers"
+            android:title="@string/recent_timers" />
+        <!--android:icon="@drawable/ic_menu_gallery"-->
+        <item
+            android:id="@+id/nav_favorites"
+            android:title="@string/favorites" />
+    </group>
+    <group android:checkableBehavior="none">
+        <item
+            android:id="@+id/nav_log_in"
+            android:title="@string/log_in" />
+    </group>
+</menu>
