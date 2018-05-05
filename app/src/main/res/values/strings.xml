@@ -4,4 +4,9 @@
     <string name="recent_timers">Recent Timers</string>
     <string name="favorites">Favorites</string>
     <string name="log_in">Log In</string>
+
+    <!-- facebook -->
+    <string name="facebook_app_id">199752323974466</string>
+    <string name="fb_login_protocol_scheme">fb199752323974466</string>
+
 </resources>
