@@ -1,7 +1,6 @@
 package edu.tacoma.uw.css.group7.e_time;
 
 import android.content.Intent;
-import android.drm.DrmStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
@@ -18,7 +17,9 @@ import com.facebook.FacebookException;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 
-public class MainActivity extends AppCompatActivity {
+import edu.tacoma.uw.css.group7.e_time.video.Video;
+
+public class MainActivity extends AppCompatActivity implements RecentFragment.OnListFragmentInteractionListener {
 
     // a reference to the drawer
     private DrawerLayout mDrawerLayout;
@@ -71,9 +72,15 @@ public class MainActivity extends AppCompatActivity {
                         // based on the item selected
                         // here's a Toast to demonstrate this:
                         CharSequence text = item.getTitle();
-                        Toast toast = Toast.makeText(getApplicationContext(), text, Toast.LENGTH_SHORT);
-                        toast.show();
-
+                        if (text.equals("Recent Timers")) {
+                            RecentFragment recentsFragment = new RecentFragment();
+                            getSupportFragmentManager().beginTransaction()
+                                    .add(R.id.content_frame, recentsFragment)
+                                    .commit();
+                        } else {
+                            Toast toast = Toast.makeText(getApplicationContext(), text, Toast.LENGTH_SHORT);
+                            toast.show();
+                        }
                         return true;
                     }
                 });
@@ -102,4 +109,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    @Override
+    public void onListFragmentInteraction(Video item) {
+
+    }
 }
