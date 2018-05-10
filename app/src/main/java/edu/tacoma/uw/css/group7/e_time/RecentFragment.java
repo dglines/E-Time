@@ -33,10 +33,11 @@ import edu.tacoma.uw.css.group7.e_time.video.Video;
  */
 public class RecentFragment extends Fragment {
 
-    // TODO: Customize parameter argument names
+
     private static final String ARG_COLUMN_COUNT = "column-count";
-    private static final String RECENT_URL = "http://olivep3.000webhostapp.com/Android/recientlist.php?cmd=recients&userId=123456";
-    // TODO: Customize parameters
+    // ToDo: get user id from fb and replace in the string below
+    private static final String RECENT_URL = "http://olivep3.000webhostapp.com/Android/recentList.php?cmd=recents&userId=123456";
+
     private int mColumnCount = 1;
     private OnListFragmentInteractionListener mListener;
     private List<Video> mRecentsList;
@@ -82,7 +83,7 @@ public class RecentFragment extends Fragment {
                 mRecyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
             // meneka says to remove this
-           // mRecyclerView.setAdapter(new MyvideoRecyclerViewAdapter(mVideoList, mListener));
+           // mRecyclerView.setAdapter(new MyvideoRecyclerViewAdapter(mRecentsList, mListener));
             RecentAsyncTask recentAsyncTask = new RecentAsyncTask();
             recentAsyncTask.execute(new String[]{RECENT_URL});
         }

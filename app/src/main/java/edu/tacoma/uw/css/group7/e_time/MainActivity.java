@@ -16,6 +16,7 @@ import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
+import com.facebook.login.widget.LoginButton;
 
 import edu.tacoma.uw.css.group7.e_time.video.Video;
 
@@ -33,6 +34,7 @@ public class MainActivity extends AppCompatActivity implements RecentFragment.On
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        final LoginButton loginButton = (LoginButton) findViewById(R.id.fblogin_button);
 
         //facebook
         // fb says to use this but idk why
@@ -74,9 +76,12 @@ public class MainActivity extends AppCompatActivity implements RecentFragment.On
                         CharSequence text = item.getTitle();
                         if (text.equals("Recent Timers")) {
                             RecentFragment recentsFragment = new RecentFragment();
-                            getSupportFragmentManager().beginTransaction()
+                            getSupportFragmentManager()
+                                    .beginTransaction()
                                     .add(R.id.content_frame, recentsFragment)
                                     .commit();
+                        } else if (item.getItemId() == R.id.log_In){
+                            loginButton.performClick();
                         } else {
                             Toast toast = Toast.makeText(getApplicationContext(), text, Toast.LENGTH_SHORT);
                             toast.show();
