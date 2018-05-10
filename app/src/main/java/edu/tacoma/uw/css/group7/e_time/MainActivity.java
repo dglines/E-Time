@@ -1,7 +1,6 @@
 package edu.tacoma.uw.css.group7.e_time;
 
 import android.content.Intent;
-import android.drm.DrmStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
@@ -17,8 +16,11 @@ import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
+import com.facebook.login.widget.LoginButton;
 
-public class MainActivity extends AppCompatActivity {
+import edu.tacoma.uw.css.group7.e_time.video.Video;
+
+public class MainActivity extends AppCompatActivity implements RecentFragment.OnListFragmentInteractionListener {
 
     // a reference to the drawer
     private DrawerLayout mDrawerLayout;
@@ -32,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        final LoginButton loginButton = (LoginButton) findViewById(R.id.fblogin_button);
 
         //facebook
         // fb says to use this but idk why
@@ -71,9 +74,18 @@ public class MainActivity extends AppCompatActivity {
                         // based on the item selected
                         // here's a Toast to demonstrate this:
                         CharSequence text = item.getTitle();
-                        Toast toast = Toast.makeText(getApplicationContext(), text, Toast.LENGTH_SHORT);
-                        toast.show();
-
+                        if (text.equals("Recent Timers")) {
+                            RecentFragment recentsFragment = new RecentFragment();
+                            getSupportFragmentManager()
+                                    .beginTransaction()
+                                    .add(R.id.content_frame, recentsFragment)
+                                    .commit();
+                        } else if (item.getItemId() == R.id.log_In){
+                            loginButton.performClick();
+                        } else {
+                            Toast toast = Toast.makeText(getApplicationContext(), text, Toast.LENGTH_SHORT);
+                            toast.show();
+                        }
                         return true;
                     }
                 });
@@ -97,9 +109,15 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // chechkif hamburger menu toggle selected
+        // check kif hamburger menu toggle selected
         return mToggle.onOptionsItemSelected(item);
     }
 
 
+    @Override
+    public void onListFragmentInteraction(Video item) {
+        // simulate passing information to timer activity or fragment
+        Toast toast = Toast.makeText(getApplicationContext(), item.getVidid(), Toast.LENGTH_LONG);
+        toast.show();
+    }
 }

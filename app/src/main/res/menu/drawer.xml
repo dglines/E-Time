@@ -2,6 +2,9 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
     <group android:checkableBehavior="none">
         <item
+            android:id="@+id/home_button"
+            android:title="Home" />
+        <item
             android:id="@+id/nav_new_timer"
             android:title="@string/new_timer" />
         <!-- android:icon="@drawable/ic_menu_camera" -->
@@ -15,7 +18,7 @@
     </group>
     <group android:checkableBehavior="none">
         <item
-            android:id="@+id/nav_log_in"
+            android:id="@+id/log_In"
             android:title="@string/log_in" />
     </group>
 </menu>
