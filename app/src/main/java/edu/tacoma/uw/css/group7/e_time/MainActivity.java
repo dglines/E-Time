@@ -109,13 +109,15 @@ public class MainActivity extends AppCompatActivity implements RecentFragment.On
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // chechkif hamburger menu toggle selected
+        // check kif hamburger menu toggle selected
         return mToggle.onOptionsItemSelected(item);
     }
 
 
     @Override
     public void onListFragmentInteraction(Video item) {
-
+        // simulate passing information to timer activity or fragment
+        Toast toast = Toast.makeText(getApplicationContext(), item.getVidid(), Toast.LENGTH_LONG);
+        toast.show();
     }
 }
