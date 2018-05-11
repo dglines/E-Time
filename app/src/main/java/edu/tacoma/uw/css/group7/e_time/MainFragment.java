@@ -93,28 +93,8 @@ public class MainFragment extends Fragment {
         // Inflate the layout for this fragment
 
         final View v = inflater.inflate(R.layout.fragment_main, container, false);
-        //facebook
-        // fb says to use this but idk why
-        boolean loggedIn = AccessToken.getCurrentAccessToken() == null;
-        Log.v("Fragment", ((TextView)v.findViewById(R.id.digital_clock)).getText().toString());
-        callbackManager = CallbackManager.Factory.create();
-        LoginManager.getInstance().registerCallback(callbackManager,
-                new FacebookCallback<LoginResult>() {
-                    @Override
-                    public void onSuccess(LoginResult loginResult) {
-                        // App code
-                    }
 
-                    @Override
-                    public void onCancel() {
-                        // App code
-                    }
 
-                    @Override
-                    public void onError(FacebookException exception) {
-                        // App code
-                    }
-                });
         // thread used to update clock display
         mClock = new Thread()    {
             @Override
@@ -165,6 +145,7 @@ public class MainFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+
     }
 
     /**
