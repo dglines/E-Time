@@ -82,14 +82,20 @@ public class MainActivity extends AppCompatActivity implements RecentFragment.On
                         // based on the item selected
                         // here's a Toast to demonstrate this:
                         CharSequence text = item.getTitle();
-                        if (text.equals("Recent Timers")) {
+                        if (item.getItemId() == R.id.nav_recent_timers) {
                             RecentFragment recentsFragment = new RecentFragment();
                             getSupportFragmentManager()
                                     .beginTransaction()
-                                    .add(R.id.content_frame, recentsFragment)
+                                    .replace(R.id.content_frame, recentsFragment)
                                     .commit();
                         } else if (item.getItemId() == R.id.log_In){
                             loginButton.performClick();
+                        } else if (item.getItemId() == R.id.nav_home) {
+                            MainFragment mainFragment = new MainFragment();
+                            getSupportFragmentManager()
+                                    .beginTransaction()
+                                    .replace(R.id.content_frame, mainFragment)
+                                    .commit();
                         } else {
                             Toast toast = Toast.makeText(getApplicationContext(), text, Toast.LENGTH_SHORT);
                             toast.show();
