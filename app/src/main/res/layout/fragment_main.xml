@@ -27,7 +27,6 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="90dp"
-        android:text="00:00"
         android:textColor="@android:color/black"
         android:textSize="68dp" />
 
@@ -38,6 +37,5 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="50dp"
-        android:onClick="newTimer"
         android:text="New Timer" />
 </RelativeLayout>

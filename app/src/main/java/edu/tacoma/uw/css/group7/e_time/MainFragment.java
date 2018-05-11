@@ -4,11 +4,13 @@ import android.app.Activity;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -44,7 +46,6 @@ public class MainFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    private TextView mDigitalClock;
 
     private Activity mActivity;
 
@@ -83,15 +84,19 @@ public class MainFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-
         mActivity = getActivity();
+    }
 
-        mDigitalClock = mActivity.findViewById(R.id.digital_clock);
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
 
+        final View v = inflater.inflate(R.layout.fragment_main, container, false);
         //facebook
         // fb says to use this but idk why
         boolean loggedIn = AccessToken.getCurrentAccessToken() == null;
-
+        Log.v("Fragment", ((TextView)v.findViewById(R.id.digital_clock)).getText().toString());
         callbackManager = CallbackManager.Factory.create();
         LoginManager.getInstance().registerCallback(callbackManager,
                 new FacebookCallback<LoginResult>() {
@@ -110,7 +115,6 @@ public class MainFragment extends Fragment {
                         // App code
                     }
                 });
-
         // thread used to update clock display
         mClock = new Thread()    {
             @Override
@@ -123,7 +127,7 @@ public class MainFragment extends Fragment {
                             public void run() {
                                 long date = System.currentTimeMillis();
                                 SimpleDateFormat sdf = new SimpleDateFormat("hh:mm");
-                                //mDigitalClock.setText(sdf.format(date));
+                                ((TextView)mActivity.findViewById(R.id.digital_clock)).setText(sdf.format(date));
                             }
                         });
                     }
@@ -133,13 +137,8 @@ public class MainFragment extends Fragment {
             }
         };
         mClock.start();
-    }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_main, container, false);
+        return v;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -164,7 +163,6 @@ public class MainFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
-        mClock.destroy();
     }
 
     /**

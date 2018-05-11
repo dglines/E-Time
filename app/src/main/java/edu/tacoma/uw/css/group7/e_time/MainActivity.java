@@ -1,7 +1,9 @@
 package edu.tacoma.uw.css.group7.e_time;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
@@ -31,6 +33,7 @@ public class MainActivity extends AppCompatActivity implements RecentFragment.On
     private ActionBarDrawerToggle mToggle;
 
     private CallbackManager callbackManager;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -133,4 +136,5 @@ public class MainActivity extends AppCompatActivity implements RecentFragment.On
     public void onFragmentInteraction(Uri uri) {
 
     }
+
 }
