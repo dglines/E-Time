@@ -125,9 +125,11 @@ public class MainFragment extends Fragment {
                         mActivity.runOnUiThread(new Runnable()    {
                             @Override
                             public void run() {
-                                long date = System.currentTimeMillis();
-                                SimpleDateFormat sdf = new SimpleDateFormat("hh:mm");
-                                ((TextView)mActivity.findViewById(R.id.digital_clock)).setText(sdf.format(date));
+                                if (mActivity.findViewById(R.id.digital_clock) != null) {
+                                    long date = System.currentTimeMillis();
+                                    SimpleDateFormat sdf = new SimpleDateFormat("hh:mm");
+                                    ((TextView) mActivity.findViewById(R.id.digital_clock)).setText(sdf.format(date));
+                                }
                             }
                         });
                     }
