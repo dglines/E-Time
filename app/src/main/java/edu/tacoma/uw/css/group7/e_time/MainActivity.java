@@ -1,6 +1,7 @@
 package edu.tacoma.uw.css.group7.e_time;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
@@ -20,7 +21,8 @@ import com.facebook.login.widget.LoginButton;
 
 import edu.tacoma.uw.css.group7.e_time.video.Video;
 
-public class MainActivity extends AppCompatActivity implements RecentFragment.OnListFragmentInteractionListener {
+public class MainActivity extends AppCompatActivity implements RecentFragment.OnListFragmentInteractionListener,
+                                                                MainFragment.OnFragmentInteractionListener {
 
     // a reference to the drawer
     private DrawerLayout mDrawerLayout;
@@ -35,6 +37,12 @@ public class MainActivity extends AppCompatActivity implements RecentFragment.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         final LoginButton loginButton = (LoginButton) findViewById(R.id.fblogin_button);
+
+        MainFragment mainFragment = new MainFragment();
+        getSupportFragmentManager()
+                .beginTransaction()
+                .add(R.id.content_frame, mainFragment)
+                .commit();
 
         //facebook
         // fb says to use this but idk why
@@ -119,5 +127,10 @@ public class MainActivity extends AppCompatActivity implements RecentFragment.On
         // simulate passing information to timer activity or fragment
         Toast toast = Toast.makeText(getApplicationContext(), item.getVidid(), Toast.LENGTH_LONG);
         toast.show();
+    }
+
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+
     }
 }

@@ -123,7 +123,7 @@ public class MainFragment extends Fragment {
                             public void run() {
                                 long date = System.currentTimeMillis();
                                 SimpleDateFormat sdf = new SimpleDateFormat("hh:mm");
-                                mDigitalClock.setText(sdf.format(date));
+                                //mDigitalClock.setText(sdf.format(date));
                             }
                         });
                     }
