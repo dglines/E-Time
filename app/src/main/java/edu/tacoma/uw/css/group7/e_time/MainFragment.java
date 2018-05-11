@@ -94,6 +94,7 @@ public class MainFragment extends Fragment {
 
         final View v = inflater.inflate(R.layout.fragment_main, container, false);
 
+
         // thread used to update clock display
         mClock = new Thread()    {
             @Override
