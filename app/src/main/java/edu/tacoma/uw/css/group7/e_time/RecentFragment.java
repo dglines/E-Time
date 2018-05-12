@@ -182,7 +182,10 @@ public class RecentFragment extends Fragment {
             return response;
         }
 
-
+        /**
+         * Runs on the UI thread after {@link #doInBackground}.
+         * @param result the value returned by {@link #doInBackground}.
+         */
         @Override
         protected void onPostExecute(String result) {
             // Log.i(TAG, "onPostExecute");
