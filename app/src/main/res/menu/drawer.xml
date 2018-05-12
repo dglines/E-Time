@@ -10,7 +10,7 @@
         <!-- android:icon="@drawable/ic_menu_camera" -->
         <item
             android:id="@+id/nav_recent_timers"
-            android:title="@string/recent_timers" />
+            android:title="@string/recent_timers"/>
         <!--android:icon="@drawable/ic_menu_gallery"-->
         <item
             android:id="@+id/nav_favorites"

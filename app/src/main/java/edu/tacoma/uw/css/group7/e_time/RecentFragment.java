@@ -26,7 +26,7 @@ import edu.tacoma.uw.css.group7.e_time.video.Video;
 
 
 /**
- * A fragment representing a list of Items.
+ * A fragment representing a list of recent video timers.
  * <p/>
  * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
  * interface.
@@ -35,13 +35,14 @@ public class RecentFragment extends Fragment {
 
 
     private static final String ARG_COLUMN_COUNT = "column-count";
-    // ToDo: get user id from fb and replace in the string below
     private static final String RECENT_URL = "http://olivep3.000webhostapp.com/Android/recentList.php?cmd=recents&userId=123456";
 
     private int mColumnCount = 1;
     private OnListFragmentInteractionListener mListener;
     private List<Video> mRecentsList;
     private RecyclerView mRecyclerView;
+
+
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
@@ -49,8 +50,6 @@ public class RecentFragment extends Fragment {
     public RecentFragment() {
     }
 
-    // TODO: Customize parameter initialization
-    @SuppressWarnings("unused")
     public static RecentFragment newInstance(int columnCount) {
         RecentFragment fragment = new RecentFragment();
         Bundle args = new Bundle();
@@ -59,6 +58,11 @@ public class RecentFragment extends Fragment {
         return fragment;
     }
 
+    /**
+     * Called to do initial creation of a fragment.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed
+     * from a previous saved state as given here.
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,6 +72,17 @@ public class RecentFragment extends Fragment {
         }
     }
 
+    /**
+     * Called to have the fragment instantiate its user interface view.
+     * @param inflater The LayoutInflater object that can be used to inflate
+     * any views in the fragment,
+     * @param container If non-null, this is the parent view that the fragment's
+     * UI should be attached to.  The fragment should not add the view itself,
+     * but this can be used to generate the LayoutParams of the view.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed
+     * from a previous saved state as given here.
+     * @return
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -91,7 +106,10 @@ public class RecentFragment extends Fragment {
     }
 
 
-
+    /**
+     * Called when a fragment is first attached to its context.
+     * {@link #onCreate(Bundle)} will be called after this.
+     */
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -103,6 +121,10 @@ public class RecentFragment extends Fragment {
         }
     }
 
+    /**
+     * Called when the fragment is no longer attached to its activity.  This
+     * is called after {@link #onDestroy()}.
+     */
     @Override
     public void onDetach() {
         super.onDetach();
@@ -120,12 +142,19 @@ public class RecentFragment extends Fragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnListFragmentInteractionListener {
-        // TODO: Update argument type and name
         void onListFragmentInteraction(Video item);
     }
 
+    /**
+     * This class allows communication between the fragment and the web service.
+     */
     private class RecentAsyncTask extends AsyncTask<String, Void, String> {
 
+        /**
+         * required for AsyncTask.  pulls list of recent timers from web serviec.
+         * @param urls
+         * @return
+         */
         @Override
         protected String doInBackground(String... urls) {
             String response = "";
@@ -153,6 +182,10 @@ public class RecentFragment extends Fragment {
             return response;
         }
 
+        /**
+         * Runs on the UI thread after {@link #doInBackground}.
+         * @param result the value returned by {@link #doInBackground}.
+         */
         @Override
         protected void onPostExecute(String result) {
             // Log.i(TAG, "onPostExecute");

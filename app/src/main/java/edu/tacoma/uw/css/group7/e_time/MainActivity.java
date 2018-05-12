@@ -24,6 +24,10 @@ import com.facebook.login.widget.LoginButton;
 
 import edu.tacoma.uw.css.group7.e_time.video.Video;
 
+/**
+ * This class serves as navigation by using the drawer view
+ * and handles logun and swapping fragments in and out based on user activity.
+ */
 public class MainActivity extends AppCompatActivity implements RecentFragment.OnListFragmentInteractionListener,
                                                                 MainFragment.OnFragmentInteractionListener {
 
@@ -35,13 +39,20 @@ public class MainActivity extends AppCompatActivity implements RecentFragment.On
 
     private CallbackManager callbackManager;
 
+    protected boolean mLoggedIn;
 
+
+    /**
+     * onCreate function is called for this class when the app is launched.
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         final LoginButton loginButton = (LoginButton) findViewById(R.id.fblogin_button);
 
+        // begin by launching home fragment
         MainFragment mainFragment = new MainFragment();
         getSupportFragmentManager()
                 .beginTransaction()
@@ -50,7 +61,7 @@ public class MainActivity extends AppCompatActivity implements RecentFragment.On
 
         //facebook
         // fb says to use this but idk why
-        boolean loggedIn = AccessToken.getCurrentAccessToken() == null;
+        mLoggedIn = AccessToken.getCurrentAccessToken() == null;
 
         callbackManager = CallbackManager.Factory.create();
         LoginManager.getInstance().registerCallback(callbackManager,
@@ -71,7 +82,7 @@ public class MainActivity extends AppCompatActivity implements RecentFragment.On
                     }
                 });
 
-        // nav menu
+        // navigation menu
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         NavigationView navView = findViewById(R.id.nav_view);           // checked
         navView.setNavigationItemSelectedListener(
@@ -108,6 +119,7 @@ public class MainActivity extends AppCompatActivity implements RecentFragment.On
                     }
                 });
 
+        // allow switching between hamburger icon and back arrow icon
         mToggle = new ActionBarDrawerToggle(this, mDrawerLayout, 0, 0);
         mDrawerLayout.addDrawerListener(mToggle);
 
@@ -118,20 +130,35 @@ public class MainActivity extends AppCompatActivity implements RecentFragment.On
 
     }
 
-
+    /**
+     *  implemented for facebook login functionality.
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         callbackManager.onActivityResult(requestCode, resultCode, data);
         super.onActivityResult(requestCode, resultCode, data);
     }
 
+    /**
+     * Enables users to make selections in the navigation drawer.
+     * @param item the item that was selected.
+     * @return a reference to the options item selected
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // check kif hamburger menu toggle selected
         return mToggle.onOptionsItemSelected(item);
     }
 
-
+    /**
+     * Alows users to make selections on a list fragment.
+     * used for the recent timers fragment.  Will be used in the future
+     * for the favorites fragment as well.
+     * @param item a reference to the item that was selected.
+     */
     @Override
     public void onListFragmentInteraction(Video item) {
         // simulate passing information to timer activity or fragment
@@ -139,6 +166,12 @@ public class MainActivity extends AppCompatActivity implements RecentFragment.On
         toast.show();
     }
 
+
+    /**
+    * This interface must be implemented by activities that contain this
+    * fragment to allow an interaction in this fragment to be communicated
+    * to the activity and potentially other fragments contained in that activity.
+    */
     @Override
     public void onFragmentInteraction(Uri uri) {
 
