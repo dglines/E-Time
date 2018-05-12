@@ -11,6 +11,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
 import com.facebook.AccessToken;
@@ -143,4 +144,8 @@ public class MainActivity extends AppCompatActivity implements RecentFragment.On
 
     }
 
+    public void newTimer(View view)   {
+        Intent intent = new Intent(this, TimerActivity.class);
+        startActivity(intent);
+    }
 }
