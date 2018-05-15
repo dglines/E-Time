@@ -41,6 +41,8 @@ public class MainActivity extends AppCompatActivity implements RecentFragment.On
 
     protected boolean mLoggedIn;
 
+    protected String mUserId = "";
+
 
     /**
      * onCreate function is called for this class when the app is launched.
@@ -69,16 +71,22 @@ public class MainActivity extends AppCompatActivity implements RecentFragment.On
                     @Override
                     public void onSuccess(LoginResult loginResult) {
                         // App code
+                        mUserId = loginResult.getAccessToken().getUserId();
+                        mLoggedIn = true;
                     }
 
                     @Override
                     public void onCancel() {
                         // App code
+                        mUserId = "";
+                        mLoggedIn = false;
                     }
 
                     @Override
                     public void onError(FacebookException exception) {
                         // App code
+                        mUserId = "";
+                        mLoggedIn = false;
                     }
                 });
 
