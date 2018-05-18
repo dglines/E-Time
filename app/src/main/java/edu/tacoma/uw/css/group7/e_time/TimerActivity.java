@@ -80,8 +80,10 @@ public class TimerActivity extends YouTubeBaseActivity implements
             mSearchTerm = extra.getString("searchTerm");
             mDuration = extra.getInt("duration");
         } else  {
-            currentVideoId = DEFAULT_VIDEO;
-            mDuration = 10000;
+            currentVideoId = getIntent().getStringExtra("vidId");
+            mSearchTerm = getIntent().getStringExtra("searchTerm");
+            mDuration = getIntent().getIntExtra("duration", 10000);
+            if (currentVideoId == null) currentVideoId = DEFAULT_VIDEO;
         }
 
         if (currentVideoId == null) {
