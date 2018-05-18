@@ -34,7 +34,6 @@ public class TimerActivity extends YouTubeBaseActivity implements
         PlaybackEventListener,
         PlaylistEventListener   {
 
-    //TODO - Put key in a separate file for use everywhere.
     // Developer Key for YouTube API
     private static final String DEVELOPER_KEY = "AIzaSyC-DjQD5CVAU9ufKS1ZRah_0NYM40FSwu4";
 
@@ -86,7 +85,6 @@ public class TimerActivity extends YouTubeBaseActivity implements
         mTimeOfLastUpdate = System.currentTimeMillis();
         isPaused = true;
         // thread used to update clock display
-        // TODO - Clean this up.
         mTimer = new Thread()    {
             @Override
             public void run()   {
@@ -141,7 +139,6 @@ public class TimerActivity extends YouTubeBaseActivity implements
         player.setPlaybackEventListener(this);
 
         if (!wasRestored) {
-            // TODO - Figure out what to do with this.
             log("Restored!");
             playNextVideo();
         }
@@ -168,7 +165,6 @@ public class TimerActivity extends YouTubeBaseActivity implements
      * Updates the YouTube player with the next video and plays it.
      */
     private void playNextVideo()    {
-        // TODO - Add code to automatically search for another video.
         mPlayer.loadVideo(currentVideoId);
 
     }
@@ -254,7 +250,6 @@ public class TimerActivity extends YouTubeBaseActivity implements
      */
     @Override
     public void onBuffering(boolean isBuffering) {
-        //TODO - Do stuff here for logging
     }
 
     /**
@@ -283,7 +278,6 @@ public class TimerActivity extends YouTubeBaseActivity implements
      */
     @Override
     public void onSeekTo(int endPositionMillis) {
-        // TODO - Unimplemented.  Required by PlaybackEventListener interface.
     }
     //***END PLAYBACK LISTENERS***//
 
@@ -312,7 +306,6 @@ public class TimerActivity extends YouTubeBaseActivity implements
     @Override
     public void onLoaded(String videoId) {
         currentVideoId = videoId;
-        // TODO - Get this to display the video name instead.
         playerState = String.format("Loaded: %s", videoId);
         updateText();
         log(playerState);
