@@ -1,12 +1,15 @@
 package edu.tacoma.uw.css.group7.e_time;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 
 
 /**
@@ -23,11 +26,18 @@ public class newTimerFragment extends Fragment {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
+    private static final String SEARCH_TERM = "searchTerm";
+    private static final String LENGTH = "length";
+
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
+    private EditText mEditSearchTerm;
+    private EditText mEditLength;
+    private String mSearchTerm;
+    private String mLength;
 
     public newTimerFragment() {
         // Required empty public constructor
@@ -64,7 +74,25 @@ public class newTimerFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_new_timer, container, false);
+        View v = inflater.inflate(R.layout.fragment_new_timer, container, false);
+        mEditSearchTerm = (EditText)v.findViewById(R.id.search_term);
+        mEditLength = (EditText)v.findViewById(R.id.length);
+
+
+        return v;
+    }
+
+    public void buttonclick(View v) {
+        //Bundle bundle = new Bundle();
+        mSearchTerm = mEditSearchTerm.getText().toString();
+        mLength = mEditLength.getText().toString();
+//        bundle.putString(SEARCH_TERM, mSearchTerm);
+//        bundle.putString(LENGTH, mLength);
+
+        Intent intent = new Intent(this.getActivity(), TimerActivity.class);
+        intent.putExtra(SEARCH_TERM, mSearchTerm);
+        intent.putExtra(LENGTH, mLength);
+
     }
 
     // TODO: Rename method, update argument and hook method into UI event
