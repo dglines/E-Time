@@ -125,6 +125,12 @@ public class TimerActivity extends YouTubeBaseActivity implements
 
     }
 
+    @Override
+    public void onDestroy() {
+        mTimer.interrupt();
+        super.onDestroy();
+    }
+
     /**
      * On success, the YouTube player is configured and listeners are set.
      * @param provider The YouTube Provider
