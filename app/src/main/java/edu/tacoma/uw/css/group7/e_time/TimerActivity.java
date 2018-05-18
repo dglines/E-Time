@@ -25,7 +25,8 @@ import java.text.SimpleDateFormat;
  * Uses similar implementation to YouTube's demonstration apps located
  * on their GitHub: https://github.com/youtube/yt-android-player
  *
- * @version 5/11/2018
+ * @author Alexander Reid
+ * @version 5/18/2018
  */
 public class TimerActivity extends YouTubeBaseActivity implements
         YouTubePlayer.OnInitializedListener,
@@ -54,6 +55,7 @@ public class TimerActivity extends YouTubeBaseActivity implements
     private int mDuration;
     private long mTimeOfLastUpdate;
     private boolean isPaused;
+    private String mSearchTerm;
 
     /**
      * Sets up the video player and timer
@@ -75,14 +77,16 @@ public class TimerActivity extends YouTubeBaseActivity implements
         // Setting up first video
         if (extra != null)  {
             currentVideoId = extra.getString("vidId");
+            mSearchTerm = extra.getString("searchTerm");
+            mDuration = extra.getInt("duration");
         } else  {
             currentVideoId = DEFAULT_VIDEO;
+            mDuration = 10000;
         }
 
         if (currentVideoId == null) {
             currentVideoId = DEFAULT_VIDEO;
         }
-        mDuration = 60000; //One minute
         mTimeOfLastUpdate = System.currentTimeMillis();
         isPaused = true;
         // thread used to update clock display
@@ -96,16 +100,18 @@ public class TimerActivity extends YouTubeBaseActivity implements
                         runOnUiThread(new Runnable()    {
                             @Override
                             public void run() {
+                                long time = System.currentTimeMillis();
+                                long tick = time - mTimeOfLastUpdate;
                                 if (findViewById(R.id.digital_timer) != null && mPlayer.isPlaying()) {
-                                    long time = System.currentTimeMillis();
-                                    mDuration -= (time - mTimeOfLastUpdate);
+                                    mDuration -= (tick);
                                     if (mDuration < 0)  {
                                         mDuration = 0;
                                         mPlayer.pause();
+                                        playButton.setText(R.string.goBack);
                                     }
-                                    mTimeOfLastUpdate = time;
                                     ((TextView) findViewById(R.id.digital_timer)).setText(formatTime(mDuration));
                                 }
+                                mTimeOfLastUpdate = time;
                             }
                         });
                     }
@@ -131,7 +137,7 @@ public class TimerActivity extends YouTubeBaseActivity implements
         super.onDestroy();
     }
 
-    /**
+    /**4
      * On success, the YouTube player is configured and listeners are set.
      * @param provider The YouTube Provider
      * @param player The YouTubePlayer inside the YouTubeView
@@ -189,9 +195,11 @@ public class TimerActivity extends YouTubeBaseActivity implements
         if (mPlayer.isPlaying()) {
             mPlayer.pause();
             playButton.setText(R.string.play);
-        } else  {
+        } else if (mDuration > 0)  {
             mPlayer.play();
             playButton.setText(R.string.pause);
+        } else  {
+            finish();
         }
     }
 
