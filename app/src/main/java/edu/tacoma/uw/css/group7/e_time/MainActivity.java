@@ -29,7 +29,8 @@ import edu.tacoma.uw.css.group7.e_time.video.Video;
  * and handles logun and swapping fragments in and out based on user activity.
  */
 public class MainActivity extends AppCompatActivity implements RecentFragment.OnListFragmentInteractionListener,
-                                                                MainFragment.OnFragmentInteractionListener {
+                                                                MainFragment.OnFragmentInteractionListener,
+                                                                newTimerFragment.OnFragmentInteractionListener {
 
     // a reference to the drawer
     private DrawerLayout mDrawerLayout;
@@ -119,6 +120,11 @@ public class MainActivity extends AppCompatActivity implements RecentFragment.On
                                     .beginTransaction()
                                     .replace(R.id.content_frame, mainFragment)
                                     .commit();
+                        } else if (item.getItemId() == R.id.nav_new_timer){
+                            newTimerFragment newTimerFragment = new newTimerFragment();
+                            getSupportFragmentManager().beginTransaction()
+                                    .replace(R.id.content_frame, newTimerFragment)
+                                    .commit();
                         } else {
                             Toast toast = Toast.makeText(getApplicationContext(), text, Toast.LENGTH_SHORT);
                             toast.show();
@@ -185,8 +191,19 @@ public class MainActivity extends AppCompatActivity implements RecentFragment.On
 
     }
 
+    @Override
+    public void setTimer(String lenTitle, int length, String termTitle, String searchTerm) {
+        Intent intent = new Intent(this, TimerActivity.class);
+        intent.putExtra(lenTitle, length);
+        intent.putExtra(termTitle, searchTerm);
+        startActivity(intent);
+
+
+    }
+
     public void newTimer(View view)   {
         Intent intent = new Intent(this, TimerActivity.class);
         startActivity(intent);
+
     }
 }
