@@ -36,8 +36,6 @@ public class newTimerFragment extends Fragment {
     private OnFragmentInteractionListener mListener;
     private EditText mEditSearchTerm;
     private EditText mEditLength;
-    private String mSearchTerm;
-    private String mLength;
 
     public newTimerFragment() {
         // Required empty public constructor
@@ -74,24 +72,33 @@ public class newTimerFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+
         View v = inflater.inflate(R.layout.fragment_new_timer, container, false);
+
         mEditSearchTerm = (EditText)v.findViewById(R.id.search_term);
         mEditLength = (EditText)v.findViewById(R.id.length);
-
-
+        Button button = (Button) v.findViewById(R.id.btnNewTimer);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String searchTerm = mEditSearchTerm.getText().toString();
+                String length = mEditLength.getText().toString();
+                mListener.setTimer(LENGTH, length, SEARCH_TERM, searchTerm);
+            }
+        });
         return v;
     }
 
     public void buttonclick(View v) {
         //Bundle bundle = new Bundle();
-        mSearchTerm = mEditSearchTerm.getText().toString();
-        mLength = mEditLength.getText().toString();
+        String searchTerm = mEditSearchTerm.getText().toString();
+        String length = mEditLength.getText().toString();
 //        bundle.putString(SEARCH_TERM, mSearchTerm);
 //        bundle.putString(LENGTH, mLength);
 
         Intent intent = new Intent(this.getActivity(), TimerActivity.class);
-        intent.putExtra(SEARCH_TERM, mSearchTerm);
-        intent.putExtra(LENGTH, mLength);
+        intent.putExtra(SEARCH_TERM, searchTerm);
+        intent.putExtra(LENGTH, length);
 
     }
 
@@ -132,5 +139,7 @@ public class newTimerFragment extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+
+        void setTimer(String lenTitle, String length, String termTitle, String searchTerm);
     }
 }
