@@ -7,26 +7,27 @@
     tools:context=".newTimerFragment">
 
     <EditText
+        android:id="@+id/duration"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="duration (in seconds)"
+        android:layout_gravity="top"
+        android:inputType="number" />
+
+    <EditText
         android:id="@+id/search_term"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="length (in seconds)"
-        android:inputType="numberDecimal"
-        />
+        android:layout_gravity="center"
+        android:hint="search term"
+        android:inputType="text" />
 
-    <EditText
-        android:id="@+id/length"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Search term"
-        android:inputType="text"
-        />
+
 
     <Button
         android:id="@+id/btnNewTimer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="end"
-        android:onClick="buttonclick"
         android:text="Submit" />
 </LinearLayout>

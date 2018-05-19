@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 
 /**
@@ -27,15 +28,16 @@ public class newTimerFragment extends Fragment {
     private static final String ARG_PARAM2 = "param2";
 
     private static final String SEARCH_TERM = "searchTerm";
-    private static final String LENGTH = "length";
+    private static final String LENGTH = "duration";
 
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
+    private EditText mEditDuration;
     private EditText mEditSearchTerm;
-    private EditText mEditLength;
+
 
     public newTimerFragment() {
         // Required empty public constructor
@@ -74,33 +76,30 @@ public class newTimerFragment extends Fragment {
         // Inflate the layout for this fragment
 
         View v = inflater.inflate(R.layout.fragment_new_timer, container, false);
-
+        mEditDuration = (EditText)v.findViewById(R.id.duration);
         mEditSearchTerm = (EditText)v.findViewById(R.id.search_term);
-        mEditLength = (EditText)v.findViewById(R.id.length);
+
         Button button = (Button) v.findViewById(R.id.btnNewTimer);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String searchTerm = mEditSearchTerm.getText().toString();
-                String length = mEditLength.getText().toString();
-                mListener.setTimer(LENGTH, length, SEARCH_TERM, searchTerm);
+                String lengthString = mEditDuration.getText().toString();
+                int duration = 0;
+                try {
+                    duration = Integer.parseInt(lengthString);
+                }catch(NumberFormatException e){
+                    Toast.makeText(v.getContext(), "Invalid input!\n" + "video length: " + duration + " term: " + searchTerm
+                            , Toast.LENGTH_LONG).show();
+                    return;
+                }
+                
+                mListener.setTimer(LENGTH, duration * 1000, SEARCH_TERM, searchTerm);
             }
         });
         return v;
     }
 
-    public void buttonclick(View v) {
-        //Bundle bundle = new Bundle();
-        String searchTerm = mEditSearchTerm.getText().toString();
-        String length = mEditLength.getText().toString();
-//        bundle.putString(SEARCH_TERM, mSearchTerm);
-//        bundle.putString(LENGTH, mLength);
-
-        Intent intent = new Intent(this.getActivity(), TimerActivity.class);
-        intent.putExtra(SEARCH_TERM, searchTerm);
-        intent.putExtra(LENGTH, length);
-
-    }
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
@@ -140,6 +139,6 @@ public class newTimerFragment extends Fragment {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
 
-        void setTimer(String lenTitle, String length, String termTitle, String searchTerm);
+        void setTimer(String lenTitle, int length, String termTitle, String searchTerm);
     }
 }

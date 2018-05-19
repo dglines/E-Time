@@ -192,7 +192,7 @@ public class MainActivity extends AppCompatActivity implements RecentFragment.On
     }
 
     @Override
-    public void setTimer(String lenTitle, String length, String termTitle, String searchTerm) {
+    public void setTimer(String lenTitle, int length, String termTitle, String searchTerm) {
         Intent intent = new Intent(this, TimerActivity.class);
         intent.putExtra(lenTitle, length);
         intent.putExtra(termTitle, searchTerm);
