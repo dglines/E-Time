@@ -169,9 +169,19 @@ public class MainActivity extends AppCompatActivity implements RecentFragment.On
      */
     @Override
     public void onListFragmentInteraction(Video item) {
+
         // simulate passing information to timer activity or fragment
+
+        //do not click super fast plz
         Toast toast = Toast.makeText(getApplicationContext(), item.getVidid(), Toast.LENGTH_LONG);
         toast.show();
+        Intent intent = new Intent(this, TimerActivity.class);
+        intent.putExtra("vidId", item.getVidid());
+        intent.putExtra("duration", item.getLength());
+        intent.putExtra("userId", "test");
+        startActivity(intent);
+
+
     }
 
 

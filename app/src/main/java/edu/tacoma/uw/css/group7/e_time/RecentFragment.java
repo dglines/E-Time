@@ -35,7 +35,8 @@ public class RecentFragment extends Fragment {
 
 
     private static final String ARG_COLUMN_COUNT = "column-count";
-    private static final String RECENT_URL = "http://olivep3.000webhostapp.com/Android/recentList.php?cmd=recents&userId=123456";
+    private static final String RECENT_URL = "http://olivep3.000webhostapp.com/Android/recentList.php?cmd=recents&userId=test";
+    private static final String BASE_URL = "http://olivep3.000webhostapp.com/Android/recentList.php?cmd=recents&userId=";
 
     private int mColumnCount = 1;
     private OnListFragmentInteractionListener mListener;

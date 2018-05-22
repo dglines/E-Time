@@ -1,5 +1,6 @@
 package edu.tacoma.uw.css.group7.e_time;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -17,8 +18,14 @@ import com.google.android.youtube.player.YouTubePlayer.PlayerStyle;
 import com.google.android.youtube.player.YouTubePlayer.PlaylistEventListener;
 import com.google.android.youtube.player.YouTubePlayerView;
 
-import java.text.SimpleDateFormat;
+import org.json.JSONException;
+import org.json.JSONObject;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 /**
  * TimerActivity handles the YouTube timer for the E-Time app.
@@ -42,6 +49,9 @@ public class TimerActivity extends YouTubeBaseActivity implements
     // Test Video IDs
     private static final String DEFAULT_VIDEO = "BJ0xBCwkg3E";  //Running in the 90s
     private static final String TESTING_VIDEO = "5xRCR3r4pGg";  //Music for testing
+    private static final String ERROR_VID = "oHg5SJYRHA0"; //Not a meme
+
+    private static final String BASE_URL = "http://olivep3.000webhostapp.com/Android/"; // addRecent.php?userId=<userid>&vidId=<vidid>&length=<length>&remaining=<remaining(float)>
 
     // YouTube player object and view
     private YouTubePlayerView youTubePlayerView;
@@ -52,10 +62,12 @@ public class TimerActivity extends YouTubeBaseActivity implements
     private String currentVideoId;
 
     private Thread mTimer;
+    private int mCurrentTime;
     private int mDuration;
     private long mTimeOfLastUpdate;
     private boolean isPaused;
     private String mSearchTerm;
+    private String mUserId;
 
     /**
      * Sets up the video player and timer
@@ -78,17 +90,26 @@ public class TimerActivity extends YouTubeBaseActivity implements
         if (extra != null)  {
             currentVideoId = extra.getString("vidId");
             mSearchTerm = extra.getString("searchTerm");
-            mDuration = extra.getInt("duration");
+            mCurrentTime = extra.getInt("duration");
+            mUserId = extra.getString("userId");
+            mDuration = mCurrentTime;
         } else  {
             currentVideoId = getIntent().getStringExtra("vidId");
             mSearchTerm = getIntent().getStringExtra("searchTerm");
-            mDuration = getIntent().getIntExtra("duration", 10000);
-            if (currentVideoId == null) currentVideoId = DEFAULT_VIDEO;
+            mCurrentTime = getIntent().getIntExtra("duration", 10000);
+            mUserId = getIntent().getStringExtra("userId");
+            mDuration = mCurrentTime;
         }
 
         if (currentVideoId == null) {
-            currentVideoId = DEFAULT_VIDEO;
+            currentVideoId = ERROR_VID;
+            mCurrentTime = 213000;
+            mDuration = mCurrentTime;
         }
+        if (mUserId == null)    {
+            mUserId = "";
+        }
+
         mTimeOfLastUpdate = System.currentTimeMillis();
         isPaused = true;
         // thread used to update clock display
@@ -105,13 +126,13 @@ public class TimerActivity extends YouTubeBaseActivity implements
                                 long time = System.currentTimeMillis();
                                 long tick = time - mTimeOfLastUpdate;
                                 if (findViewById(R.id.digital_timer) != null && mPlayer.isPlaying()) {
-                                    mDuration -= (tick);
-                                    if (mDuration < 0)  {
-                                        mDuration = 0;
+                                    mCurrentTime -= (tick);
+                                    if (mCurrentTime < 0)  {
+                                        mCurrentTime = 0;
                                         mPlayer.pause();
                                         playButton.setText(R.string.goBack);
                                     }
-                                    ((TextView) findViewById(R.id.digital_timer)).setText(formatTime(mDuration));
+                                    ((TextView) findViewById(R.id.digital_timer)).setText(formatTime(mCurrentTime));
                                 }
                                 mTimeOfLastUpdate = time;
                             }
@@ -197,12 +218,18 @@ public class TimerActivity extends YouTubeBaseActivity implements
         if (mPlayer.isPlaying()) {
             mPlayer.pause();
             playButton.setText(R.string.play);
-        } else if (mDuration > 0)  {
+        } else if (mCurrentTime > 0)  {
             mPlayer.play();
             playButton.setText(R.string.pause);
         } else  {
             finish();
         }
+    }
+
+    @Override
+    public void onStop()    {
+        addRecent();
+        super.onStop();
     }
 
     /**
@@ -409,4 +436,91 @@ public class TimerActivity extends YouTubeBaseActivity implements
 
     //***END PLAYLIST LISTENERS***//
 
+    private void addRecent()    {
+        if (!mUserId.equals("")) {
+            AddRecentTask task = new AddRecentTask();
+            String url = urlBuilder();
+            task.execute(new String[]{url.toString()});
+        }
+    }
+
+    private String urlBuilder() { //addRecent.php?userId=<userid>&vidId=<vidid>&length=<length>&remaining=<remaining(float)>
+
+        String url = BASE_URL + "addRecent.php?"
+                + "userId=" + mUserId
+                + "&vidId=" + currentVideoId
+                + "&length=" + mDuration
+                + "&remaining=" + mCurrentTime;
+        //Toast.makeText(getApplicationContext(), url, Toast.LENGTH_LONG).show();
+        return url;
+    }
+
+    private class AddRecentTask extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected String doInBackground(String... urls) {
+            String response = "";
+            HttpURLConnection urlConnection = null;
+            for (String url : urls) {
+                try {
+                    URL urlObject = new URL(url);
+                    urlConnection = (HttpURLConnection) urlObject.openConnection();
+
+                    InputStream content = urlConnection.getInputStream();
+
+                    BufferedReader buffer = new BufferedReader(new InputStreamReader(content));
+                    String s = "";
+                    while ((s = buffer.readLine()) != null) {
+                        response += s;
+                    }
+
+                } catch (Exception e) {
+                    response = "Unable to add recent entry, Reason: "
+                            + e.getMessage();
+                } finally {
+                    if (urlConnection != null)
+                        urlConnection.disconnect();
+                }
+
+            }
+            return response;
+        }
+
+
+        /**
+         * It checks to see if there was a problem with the URL(Network) which is when an
+         * exception is caught. It tries to call the parse Method and checks to see if it was successful.
+         * If not, it displays the exception.
+         *
+         * @param result
+         */
+        @Override
+        protected void onPostExecute(String result) {
+//            // Something wrong with the network or the URL.
+//            try {
+//                JSONObject jsonObject = new JSONObject(result);
+//                String status = (String) jsonObject.get(result);
+//                if (status.equals("success")) {
+//                    Toast.makeText(getApplicationContext(), "Recent entry saved."
+//                            , Toast.LENGTH_LONG)
+//                            .show();
+//                } else {
+//                    Toast.makeText(getApplicationContext(), "Failed to add: "
+//                                    + jsonObject.get("error")
+//                            , Toast.LENGTH_LONG)
+//                            .show();
+//                }
+//            } catch (JSONException e) {
+//                Toast.makeText(getApplicationContext(), "Something wrong with the data" +
+//                        e.getMessage(), Toast.LENGTH_LONG).show();
+//            }
+//            // Everything is good, show the list of courses.
+            //REEEEE
+        }
+    }
 }
