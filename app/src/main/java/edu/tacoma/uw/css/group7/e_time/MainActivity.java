@@ -22,6 +22,7 @@ import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 
+import edu.tacoma.uw.css.group7.e_time.authenticate.SignInActivity;
 import edu.tacoma.uw.css.group7.e_time.video.Video;
 
 /**
@@ -41,6 +42,7 @@ public class MainActivity extends AppCompatActivity implements RecentFragment.On
     private CallbackManager callbackManager;
 
     protected boolean mLoggedIn;
+    private Activity that = this;
 
     protected String mUserId = "";
 
@@ -113,7 +115,9 @@ public class MainActivity extends AppCompatActivity implements RecentFragment.On
                                     .replace(R.id.content_frame, recentsFragment)
                                     .commit();
                         } else if (item.getItemId() == R.id.log_In){
-                            loginButton.performClick();
+                            Intent intent = new Intent(that, SignInActivity.class);
+                            startActivity(intent);
+                            //loginButton.performClick();
                         } else if (item.getItemId() == R.id.nav_home) {
                             MainFragment mainFragment = new MainFragment();
                             getSupportFragmentManager()
