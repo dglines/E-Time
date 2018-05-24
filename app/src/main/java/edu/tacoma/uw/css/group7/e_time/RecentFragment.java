@@ -101,7 +101,8 @@ public class RecentFragment extends Fragment {
             // meneka says to remove this
            // mRecyclerView.setAdapter(new MyvideoRecyclerViewAdapter(mRecentsList, mListener));
             RecentAsyncTask recentAsyncTask = new RecentAsyncTask();
-            recentAsyncTask.execute(new String[]{RECENT_URL});
+            recentAsyncTask.execute(new String[]{BASE_URL + ((MainActivity)getActivity()).getUserId()});
+            Toast.makeText(context,BASE_URL + ((MainActivity)getActivity()).getUserId(), Toast.LENGTH_LONG).show();
         }
         return view;
     }

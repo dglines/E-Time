@@ -22,6 +22,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import edu.tacoma.uw.css.group7.e_time.MainActivity;
 import edu.tacoma.uw.css.group7.e_time.R;
 
 import static com.facebook.FacebookSdk.getApplicationContext;
@@ -39,11 +40,13 @@ public class LoginFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-    private static final String DB_URL = "https://olivep3.000webhostapp.com/Android/Login.php/";
+    private static final String DB_URL = "https://olivep3.000webhostapp.com/Android/Login.php?";
 
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+    protected EditText emailText;
+    protected EditText pwdText;
 
     private LoginInteractionListener mListener;
 
@@ -86,8 +89,8 @@ public class LoginFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_login, container, false);
         getActivity().setTitle("Login");
 
-        final EditText emailText = (EditText) v.findViewById(R.id.edit_email);
-        final EditText pwdText = (EditText) v.findViewById(R.id.edit_pwd);
+        emailText = (EditText) v.findViewById(R.id.edit_email);
+        pwdText = (EditText) v.findViewById(R.id.edit_pwd);
 
         Button signInButton = (Button) v.findViewById(R.id.btn_signin);
         signInButton.setOnClickListener(new View.OnClickListener() {
@@ -122,7 +125,7 @@ public class LoginFragment extends Fragment {
 
     private String buildURL(String username, String pwd){
         StringBuilder sb = new StringBuilder(DB_URL);
-        sb.append("userid=" + username);
+        sb.append("userId=" + username);
         sb.append("&pass=" + pwd);
         return sb.toString();
     }
@@ -210,8 +213,16 @@ public class LoginFragment extends Fragment {
             try {
                 JSONObject jsonObject = new JSONObject(result);
                 String status = (String) jsonObject.get("result");
-                if (status.equals("success")) {
-                    Toast.makeText(getApplicationContext(), "login successful"
+                if (status.equals("logged in")) {
+                    Toast.makeText(getApplicationContext(), "Login successful"
+                            , Toast.LENGTH_LONG)
+                            .show();
+                } else if (status.equals("registered")) {
+                    Toast.makeText(getApplicationContext(), "User not found, new account made"
+                            , Toast.LENGTH_LONG)
+                            .show();
+                } else if (status.equals("incorrect password")) {
+                    Toast.makeText(getApplicationContext(), "Incorrect password"
                             , Toast.LENGTH_LONG)
                             .show();
                 } else {
