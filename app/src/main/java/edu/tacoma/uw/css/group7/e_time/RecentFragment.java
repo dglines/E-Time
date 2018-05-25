@@ -36,7 +36,10 @@ public class RecentFragment extends Fragment {
 
     private static final String ARG_COLUMN_COUNT = "column-count";
     private static final String RECENT_URL = "http://olivep3.000webhostapp.com/Android/recentList.php?cmd=recents&userId=test";
-    private static final String BASE_URL = "http://olivep3.000webhostapp.com/Android/recentList.php?cmd=recents&userId=";
+    private static final String BASE_URL = "http://olivep3.000webhostapp.com/Android/recentList.php?cmd=";
+
+    private String cmdUrl = "recents&userId=";
+    private boolean mFavorite = false;
 
     private int mColumnCount = 1;
     private OnListFragmentInteractionListener mListener;
@@ -67,7 +70,6 @@ public class RecentFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         if (getArguments() != null) {
             mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
         }
@@ -101,10 +103,19 @@ public class RecentFragment extends Fragment {
             // meneka says to remove this
            // mRecyclerView.setAdapter(new MyvideoRecyclerViewAdapter(mRecentsList, mListener));
             RecentAsyncTask recentAsyncTask = new RecentAsyncTask();
-            recentAsyncTask.execute(new String[]{BASE_URL + ((MainActivity)getActivity()).getUserId()});
-            Toast.makeText(context,BASE_URL + ((MainActivity)getActivity()).getUserId(), Toast.LENGTH_LONG).show();
+            recentAsyncTask.execute(new String[]{BASE_URL + cmdUrl + ((MainActivity)getActivity()).getUserId()});
+            Toast.makeText(context,BASE_URL + cmdUrl + ((MainActivity)getActivity()).getUserId(), Toast.LENGTH_LONG).show();
         }
         return view;
+    }
+
+    public void setFavorite(boolean favorite) {
+        mFavorite = favorite;
+        if (favorite) {
+            cmdUrl = "favorites&userId=";
+        } else {
+            cmdUrl = "recents&userId=";
+        }
     }
 
 
@@ -191,6 +202,8 @@ public class RecentFragment extends Fragment {
         @Override
         protected void onPostExecute(String result) {
             // Log.i(TAG, "onPostExecute");
+
+
 
             if (result.startsWith("Unable to")) {
                 Toast.makeText(getActivity().getApplicationContext(), result, Toast.LENGTH_LONG)

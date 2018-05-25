@@ -126,6 +126,14 @@ public class MainActivity extends AppCompatActivity implements RecentFragment.On
                                     .beginTransaction()
                                     .replace(R.id.content_frame, recentsFragment)
                                     .commit();
+                            recentsFragment.setFavorite(false);
+                        } else if (item.getItemId() == R.id.nav_favorites) {
+                            RecentFragment recentsFragment = new RecentFragment();
+                            getSupportFragmentManager()
+                                    .beginTransaction()
+                                    .replace(R.id.content_frame, recentsFragment)
+                                    .commit();
+                            recentsFragment.setFavorite(true);
                         } else if (item.getItemId() == R.id.log_In){
                             Intent intent = new Intent(that, SignInActivity.class);
                             startActivity(intent);

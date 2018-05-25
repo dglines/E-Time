@@ -48,6 +48,9 @@ public class LoginFragment extends Fragment {
     protected EditText emailText;
     protected EditText pwdText;
 
+    private String username;
+    private String pwd;
+
     private LoginInteractionListener mListener;
 
     public LoginFragment() {
@@ -96,8 +99,8 @@ public class LoginFragment extends Fragment {
         signInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String username = emailText.getText().toString();
-                String pwd = pwdText.getText().toString();
+                username = emailText.getText().toString();
+                pwd = pwdText.getText().toString();
                 if (TextUtils.isEmpty(username)) {
                     Toast.makeText(v.getContext(), "Enter valid username"
                             , Toast.LENGTH_SHORT)
@@ -116,7 +119,7 @@ public class LoginFragment extends Fragment {
                     String url = buildURL(username, pwd);
                     AuthenticateTask task = new AuthenticateTask();
                     task.execute(new String[]{url.toString()});
-                    mListener.login(username, pwd);
+//                    mListener.login(username, pwd);
                 }
             }
         });
@@ -217,14 +220,17 @@ public class LoginFragment extends Fragment {
                     Toast.makeText(getApplicationContext(), "Login successful"
                             , Toast.LENGTH_LONG)
                             .show();
+                    mListener.login(username, pwd);
                 } else if (status.equals("registered")) {
                     Toast.makeText(getApplicationContext(), "User not found, new account made"
                             , Toast.LENGTH_LONG)
                             .show();
+                    mListener.login(username, pwd);
                 } else if (status.equals("incorrect password")) {
                     Toast.makeText(getApplicationContext(), "Incorrect password"
                             , Toast.LENGTH_LONG)
                             .show();
+
                 } else {
                     Toast.makeText(getApplicationContext(), "Failed to login "
                                     + jsonObject.get("error")
