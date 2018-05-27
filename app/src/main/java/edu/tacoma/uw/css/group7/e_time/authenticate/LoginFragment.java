@@ -39,7 +39,7 @@ public class LoginFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-    private static final String DB_URL = "https://olivep3.000webhostapp.com/Android/Login.php/";
+    private static final String DB_URL = "https://olivep3.000webhostapp.com/Android/Login.php?";
 
     // TODO: Rename and change types of parameters
     private String mParam1;
