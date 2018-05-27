@@ -12,6 +12,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.AccessToken;
@@ -56,6 +58,16 @@ public class MainActivity extends AppCompatActivity implements RecentFragment.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         final LoginButton loginButton = (LoginButton) findViewById(R.id.fblogin_button);
+
+
+        String extra = getIntent().getStringExtra("userId");
+
+        if (extra != null && extra.length() > 0)    {
+            mUserId = extra;
+            mLoggedIn = true;
+        } else  {
+            mLoggedIn = false;
+        }
 
         // begin by launching home fragment
         MainFragment mainFragment = new MainFragment();
@@ -210,6 +222,7 @@ public class MainActivity extends AppCompatActivity implements RecentFragment.On
         Intent intent = new Intent(this, TimerActivity.class);
         intent.putExtra(lenTitle, length);
         intent.putExtra(termTitle, searchTerm);
+        intent.putExtra("userId", mUserId);
         startActivity(intent);
 
 
@@ -217,7 +230,16 @@ public class MainActivity extends AppCompatActivity implements RecentFragment.On
 
     public void newTimer(View view)   {
         Intent intent = new Intent(this, TimerActivity.class);
+        intent.putExtra("userId", mUserId);
         startActivity(intent);
 
+    }
+
+    public String getUserId()   {
+        return mUserId;
+    }
+
+    public void setUserId(String userId) {
+        this.mUserId = userId;
     }
 }

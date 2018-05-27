@@ -101,9 +101,7 @@ public class TimerActivity extends YouTubeBaseActivity implements
         }
 
         if (currentVideoId == null) {
-            currentVideoId = ERROR_VID;
-            mCurrentTime = 213000;
-            mDuration = mCurrentTime;
+            currentVideoId = TESTING_VIDEO;
         }
         if (mUserId == null)    {
             mUserId = "";
@@ -433,7 +431,10 @@ public class TimerActivity extends YouTubeBaseActivity implements
         if (!mUserId.equals("")) {
             AddRecentTask task = new AddRecentTask();
             String url = urlBuilder();
+            Log.e("databaseURL",url);
             task.execute(new String[]{url.toString()});
+        } else  {
+            Log.e("TimerActivity", "Bad user ID: \" " + mUserId.toString() + "\"");
         }
     }
 

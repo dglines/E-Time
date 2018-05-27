@@ -38,11 +38,15 @@ public class MainFragment extends Fragment {
 
     private Activity mActivity;
 
+    private TextView mLoginText;
+
     private CallbackManager callbackManager;
 
     private OnFragmentInteractionListener mListener;
 
     private Thread mClock;
+
+
 
     public MainFragment() {
         // Required empty public constructor
@@ -102,6 +106,15 @@ public class MainFragment extends Fragment {
 
         final View v = inflater.inflate(R.layout.fragment_main, container, false);
 
+        mLoginText = (TextView) v.findViewById(R.id.login_text);
+
+        String user = ((MainActivity)mActivity).getUserId();
+
+        if (user.length() > 0)  {
+            mLoginText.setText("Hi " + user);
+        } else  {
+            mLoginText.setText("Not Logged In");
+        }
 
         // thread used to update clock display
         mClock = new Thread()    {

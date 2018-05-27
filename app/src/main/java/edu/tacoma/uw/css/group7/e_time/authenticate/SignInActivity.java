@@ -9,6 +9,7 @@ import edu.tacoma.uw.css.group7.e_time.R;
 
 public class SignInActivity extends AppCompatActivity implements LoginFragment.LoginInteractionListener {
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -23,7 +24,11 @@ public class SignInActivity extends AppCompatActivity implements LoginFragment.L
     @Override
     public void login(String email, String pwd) {
         Intent intent = new Intent(this, MainActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.putExtra("userId", email);
         startActivity(intent);
+
         this.finish();
     }
+
 }
