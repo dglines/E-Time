@@ -136,7 +136,9 @@ public class MainActivity extends AppCompatActivity implements RecentFragment.On
                             recentsFragment.setFavorite(true);
                         } else if (item.getItemId() == R.id.log_In){
                             Intent intent = new Intent(that, SignInActivity.class);
+                            intent.putExtra("userID", mUserId);
                             startActivity(intent);
+
                             //loginButton.performClick();
                         } else if (item.getItemId() == R.id.nav_home) {
                             MainFragment mainFragment = new MainFragment();
