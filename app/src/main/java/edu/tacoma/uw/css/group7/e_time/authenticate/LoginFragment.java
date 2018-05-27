@@ -51,6 +51,8 @@ public class LoginFragment extends Fragment {
     private String username;
     private String pwd;
 
+    private Button signInButton;
+
     private LoginInteractionListener mListener;
 
     public LoginFragment() {
@@ -95,7 +97,7 @@ public class LoginFragment extends Fragment {
         emailText = (EditText) v.findViewById(R.id.edit_email);
         pwdText = (EditText) v.findViewById(R.id.edit_pwd);
 
-        Button signInButton = (Button) v.findViewById(R.id.btn_signin);
+        signInButton = (Button) v.findViewById(R.id.btn_signin);
         signInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -222,10 +224,11 @@ public class LoginFragment extends Fragment {
                             .show();
                     mListener.login(username, pwd);
                 } else if (status.equals("registered")) {
-                    Toast.makeText(getApplicationContext(), "User not found, new account made"
+                    Toast.makeText(getApplicationContext(), "Please Create Account"
                             , Toast.LENGTH_LONG)
                             .show();
-                    mListener.login(username, pwd);
+                    signInButton.setText("Register");
+                    //mListener.login(username, pwd);
                 } else if (status.equals("incorrect password")) {
                     Toast.makeText(getApplicationContext(), "Incorrect password"
                             , Toast.LENGTH_LONG)
