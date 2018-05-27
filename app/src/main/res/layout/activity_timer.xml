@@ -45,8 +45,6 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             layout="@layout/player_controls_container" />
-
-
     </LinearLayout>
 
     <RelativeLayout
