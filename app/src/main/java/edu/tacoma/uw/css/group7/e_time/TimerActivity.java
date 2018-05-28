@@ -17,15 +17,35 @@ import com.google.android.youtube.player.YouTubePlayer.PlayerStateChangeListener
 import com.google.android.youtube.player.YouTubePlayer.PlayerStyle;
 import com.google.android.youtube.player.YouTubePlayer.PlaylistEventListener;
 import com.google.android.youtube.player.YouTubePlayerView;
+import com.google.api.client.http.HttpRequest;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.http.LowLevelHttpRequest;
+import com.google.api.client.http.javanet.NetHttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.http.HttpRequestInitializer;
+import com.google.api.client.json.JsonGenerator;
+import com.google.api.client.json.JsonParser;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.youtube.YouTube;
+import com.google.api.services.youtube.model.SearchListResponse;
+import com.google.api.services.youtube.model.SearchResult;
+
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.Reader;
+import java.io.Writer;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.charset.Charset;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * TimerActivity handles the YouTube timer for the E-Time app.
@@ -49,8 +69,11 @@ public class TimerActivity extends YouTubeBaseActivity implements
     private static final String DEFAULT_VIDEO = "BJ0xBCwkg3E";  //Running in the 90s
     private static final String TESTING_VIDEO = "5xRCR3r4pGg";  //Music for testing
     private static final String ERROR_VID = "oHg5SJYRHA0"; //Not a meme
+    private static final long NUMBER_OF_VIDEOS_RETURNED = 10;
 
     private static final String BASE_URL = "http://olivep3.000webhostapp.com/Android/"; // addRecent.php?userId=<userid>&vidId=<vidid>&length=<length>&remaining=<remaining(float)>
+
+    private static YouTube youtube;
 
     // YouTube player object and view
     private YouTubePlayerView youTubePlayerView;
@@ -67,6 +90,7 @@ public class TimerActivity extends YouTubeBaseActivity implements
     private boolean isPaused;
     private String mSearchTerm;
     private String mUserId;
+    private Iterator<SearchResult> iterator;
 
     /**
      * Sets up the video player and timer
@@ -106,6 +130,13 @@ public class TimerActivity extends YouTubeBaseActivity implements
         if (mUserId == null)    {
             mUserId = "";
         }
+
+        try {
+            Object result = new SearchTask().execute().get();
+        } catch (Exception e)   {
+            // REEEEE
+        }
+
 
         mTimeOfLastUpdate = System.currentTimeMillis();
         isPaused = true;
@@ -378,6 +409,11 @@ public class TimerActivity extends YouTubeBaseActivity implements
     @Override
     public void onVideoEnded() {
         playerState = "Video Ended.";
+        try {
+            Object result = new SearchTask().execute().get();
+        } catch (Exception e){
+
+        }
         playNextVideo();
         updateText();
         log(playerState);
@@ -447,6 +483,88 @@ public class TimerActivity extends YouTubeBaseActivity implements
                 + "&remaining=" + mCurrentTime;
         //Toast.makeText(getApplicationContext(), url, Toast.LENGTH_LONG).show();
         return url;
+    }
+
+    private class SearchTask extends AsyncTask<Void, Void, Boolean> {
+
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected Boolean doInBackground(Void...voids) {
+            String response = "";
+            if (mSearchTerm != null && mSearchTerm.length() > 0) {
+                if (iterator == null || !iterator.hasNext()) {
+                    try {
+                        youtube = new YouTube.Builder(new NetHttpTransport(),
+                                new JacksonFactory(),
+                                new HttpRequestInitializer() {
+                                    @Override
+                                    public void initialize(HttpRequest httpRequest) throws IOException {
+                                    }
+                                }).setApplicationName("E-Time").build();
+                        YouTube.Search.List search = youtube.search().list("id,snippet");
+                        search.setKey(DEVELOPER_KEY);
+                        search.setQ(mSearchTerm);
+                        search.setFields("items(id/kind,id/videoId,snippet/title,snippet/thumbnails/default/url)");
+                        search.setMaxResults(NUMBER_OF_VIDEOS_RETURNED);
+                        SearchListResponse resp = search.execute();
+                        List<SearchResult> results = resp.getItems();
+                        if (results != null) {
+                            iterator = results.iterator();
+                            if (iterator.hasNext())
+                                currentVideoId = iterator.next().getId().getVideoId();
+                        } else {
+                            currentVideoId = ERROR_VID;
+                        }
+                    } catch (Exception e) {
+                        Log.e("YouTubeBuilder", "FAILURE!");
+                        e.printStackTrace();
+                        return false;
+                    }
+                } else  {
+                    currentVideoId = iterator.next().getId().getVideoId();
+                }
+            } else  {
+                currentVideoId = ERROR_VID;
+            }
+            return true;
+        }
+
+
+        /**
+         * It checks to see if there was a problem with the URL(Network) which is when an
+         * exception is caught. It tries to call the parse Method and checks to see if it was successful.
+         * If not, it displays the exception.
+         *
+         * @param result
+         */
+        @Override
+        protected void onPostExecute(Boolean result) {
+//            // Something wrong with the network or the URL.
+//            try {
+//                JSONObject jsonObject = new JSONObject(result);
+//                String status = (String) jsonObject.get(result);
+//                if (status.equals("success")) {
+//                    Toast.makeText(getApplicationContext(), "Recent entry saved."
+//                            , Toast.LENGTH_LONG)
+//                            .show();
+//                } else {
+//                    Toast.makeText(getApplicationContext(), "Failed to add: "
+//                                    + jsonObject.get("error")
+//                            , Toast.LENGTH_LONG)
+//                            .show();
+//                }
+//            } catch (JSONException e) {
+//                Toast.makeText(getApplicationContext(), "Something wrong with the data" +
+//                        e.getMessage(), Toast.LENGTH_LONG).show();
+//            }
+//            // Everything is good, show the list of courses.
+            //REEEEE
+        }
     }
 
     private class AddRecentTask extends AsyncTask<String, Void, String> {
