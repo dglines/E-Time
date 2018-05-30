@@ -52,6 +52,11 @@ public class LoginFragment extends Fragment {
     private String mParam2;
     protected EditText emailText;
     protected EditText pwdText;
+    
+    private String username;
+    private String pwd;
+
+    private Button signInButton;
 
     private LoginInteractionListener mListener;
     private RecentDB mRecentDB;
@@ -100,7 +105,7 @@ public class LoginFragment extends Fragment {
         emailText = (EditText) v.findViewById(R.id.edit_email);
         pwdText = (EditText) v.findViewById(R.id.edit_pwd);
 
-        Button signInButton = (Button) v.findViewById(R.id.btn_signin);
+        signInButton = (Button) v.findViewById(R.id.btn_signin);
         signInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
