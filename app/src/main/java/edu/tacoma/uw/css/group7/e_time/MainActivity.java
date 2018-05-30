@@ -1,7 +1,9 @@
 package edu.tacoma.uw.css.group7.e_time;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -42,6 +44,7 @@ public class MainActivity extends AppCompatActivity implements RecentFragment.On
     private ActionBarDrawerToggle mToggle;
 
     private CallbackManager callbackManager;
+    private SharedPreferences mSharedPreferences;
 
     protected boolean mLoggedIn;
     private Activity that = this;
@@ -126,10 +129,16 @@ public class MainActivity extends AppCompatActivity implements RecentFragment.On
                                     .beginTransaction()
                                     .replace(R.id.content_frame, recentsFragment)
                                     .commit();
-                        } else if (item.getItemId() == R.id.log_In){
+                        } else if (item.getItemId() == R.id.log_In) {
+                            mSharedPreferences = getSharedPreferences(getString(R.string.LOGIN_PREFS)
+                                    , Context.MODE_PRIVATE);
+//                            if (mSharedPreferences.getBoolean(R.string.LOGGEDIN)) {
+//
+//                            }
                             Intent intent = new Intent(that, SignInActivity.class);
                             startActivity(intent);
                             //loginButton.performClick();
+
                         } else if (item.getItemId() == R.id.nav_home) {
                             MainFragment mainFragment = new MainFragment();
                             getSupportFragmentManager()
@@ -195,10 +204,10 @@ public class MainActivity extends AppCompatActivity implements RecentFragment.On
         // simulate passing information to timer activity or fragment
 
         //do not click super fast plz
-        Toast toast = Toast.makeText(getApplicationContext(), item.getVidid(), Toast.LENGTH_LONG);
+        Toast toast = Toast.makeText(getApplicationContext(), item.getVidId(), Toast.LENGTH_LONG);
         toast.show();
         Intent intent = new Intent(this, TimerActivity.class);
-        intent.putExtra("vidId", item.getVidid());
+        intent.putExtra("vidId", item.getVidId());
         intent.putExtra("duration", item.getLength());
         intent.putExtra("userId", "test");
         startActivity(intent);

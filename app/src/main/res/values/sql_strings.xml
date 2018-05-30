@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="CREATE_RECENT_SQL">
+    CREATE TABLE IF NOT EXISTS Recent
+    (vidId TEXT PRIMARY KEY, title TEXT,
+    duration TEXT, currentTime TEXT)
+</string>
+
+    <string name="DROP_RECENT_SQL">
+    DROP TABLE IF EXISTS Recent
+</string>
+
+</resources>

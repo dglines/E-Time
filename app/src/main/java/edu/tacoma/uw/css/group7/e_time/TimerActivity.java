@@ -1,5 +1,6 @@
 package edu.tacoma.uw.css.group7.e_time;
 
+import android.app.Activity;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -47,6 +48,8 @@ import java.nio.charset.Charset;
 import java.util.Iterator;
 import java.util.List;
 
+import edu.tacoma.uw.css.group7.e_time.data.RecentDB;
+
 /**
  * TimerActivity handles the YouTube timer for the E-Time app.
  * Uses similar implementation to YouTube's demonstration apps located
@@ -86,6 +89,7 @@ public class TimerActivity extends YouTubeBaseActivity implements
     private Thread mTimer;
     private int mCurrentTime;
     private int mDuration;
+    private String mTitle;
     private long mTimeOfLastUpdate;
     private boolean isPaused;
     private String mSearchTerm;
@@ -472,6 +476,7 @@ public class TimerActivity extends YouTubeBaseActivity implements
         } else  {
             Log.e("TimerActivity", "Bad user ID: \" " + mUserId.toString() + "\"");
         }
+
     }
 
     private String urlBuilder() { //addRecent.php?userId=<userid>&vidId=<vidid>&length=<length>&remaining=<remaining(float)>
@@ -479,8 +484,15 @@ public class TimerActivity extends YouTubeBaseActivity implements
         String url = BASE_URL + "addRecent.php?"
                 + "userId=" + mUserId
                 + "&vidId=" + currentVideoId
+                + "&title=" + mTitle
                 + "&length=" + mDuration
                 + "&remaining=" + mCurrentTime;
+
+        RecentDB recentDB = RecentFragment.getRecentDB();
+        String duration = "" + mDuration;
+        String currTime = "" + mCurrentTime;
+        recentDB.insertRecent(currentVideoId, mTitle, duration, currTime);
+
         //Toast.makeText(getApplicationContext(), url, Toast.LENGTH_LONG).show();
         return url;
     }
@@ -517,8 +529,10 @@ public class TimerActivity extends YouTubeBaseActivity implements
                             iterator = results.iterator();
                             if (iterator.hasNext())
                                 currentVideoId = iterator.next().getId().getVideoId();
+                                mTitle = iterator.next().getSnippet().getTitle();
                         } else {
                             currentVideoId = ERROR_VID;
+                            mTitle = "";
                         }
                     } catch (Exception e) {
                         Log.e("YouTubeBuilder", "FAILURE!");

@@ -6,6 +6,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,9 +22,12 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.List;
 
 import edu.tacoma.uw.css.group7.e_time.MainActivity;
 import edu.tacoma.uw.css.group7.e_time.R;
+import edu.tacoma.uw.css.group7.e_time.data.RecentDB;
+import edu.tacoma.uw.css.group7.e_time.video.Video;
 
 import static com.facebook.FacebookSdk.getApplicationContext;
 
@@ -41,6 +45,7 @@ public class LoginFragment extends Fragment {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
     private static final String DB_URL = "https://olivep3.000webhostapp.com/Android/Login.php?";
+    private static final String RECENTSDB_URL = "http://olivep3.000webhostapp.com/Android/recentList.php?cmd=recents";
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -49,6 +54,8 @@ public class LoginFragment extends Fragment {
     protected EditText pwdText;
 
     private LoginInteractionListener mListener;
+    private RecentDB mRecentDB;
+    private Context mContext;
 
     public LoginFragment() {
         // Required empty public constructor
@@ -88,6 +95,7 @@ public class LoginFragment extends Fragment {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_login, container, false);
         getActivity().setTitle("Login");
+        mContext = v.getContext();
 
         emailText = (EditText) v.findViewById(R.id.edit_email);
         pwdText = (EditText) v.findViewById(R.id.edit_pwd);
@@ -116,7 +124,13 @@ public class LoginFragment extends Fragment {
                     String url = buildURL(username, pwd);
                     AuthenticateTask task = new AuthenticateTask();
                     task.execute(new String[]{url.toString()});
+
+
+                    String recentURL = buildRecentURL(username);
+                    UpdateDBTask nextTask = new UpdateDBTask();
+                    nextTask.execute(new String[]{recentURL.toString()});
                     mListener.login(username, pwd);
+
                 }
             }
         });
@@ -130,6 +144,13 @@ public class LoginFragment extends Fragment {
         return sb.toString();
     }
 
+    private String buildRecentURL(String userID){
+        StringBuilder sb = new StringBuilder(RECENTSDB_URL);
+        sb.append("&userId=" + userID);
+        Toast.makeText(getActivity(), sb.toString(), Toast.LENGTH_LONG);
+        Log.e("Recent", sb.toString());
+        return sb.toString();
+    }
 
 
     @Override
@@ -164,8 +185,90 @@ public class LoginFragment extends Fragment {
 
     }
 
-    private class AuthenticateTask extends AsyncTask<String, Void, String> {
+    /**
+     * this class will update a local database
+     * with recent timer information based on user login credentials.
+     */
+    private class UpdateDBTask extends AsyncTask<String, Void, String> {
+        private List<Video> mRecentList;
 
+        /**
+         * required for AsyncTask.  pulls list of recent timers from web serviec.
+         * @param urls
+         * @return
+         */
+        @Override
+        protected String doInBackground(String... urls) {
+            String response = "";
+            HttpURLConnection urlConnection = null;
+            for (String url : urls) {
+                try {
+                    URL urlObject = new URL(url);
+                    urlConnection = (HttpURLConnection) urlObject.openConnection();
+                    InputStream content = urlConnection.getInputStream();
+
+                    BufferedReader buffer = new BufferedReader(new InputStreamReader(content));
+                    String s = "";
+                    while ((s = buffer.readLine()) != null) {
+                        response += s;
+                    }
+
+                } catch(Exception e) {
+                    response = "Unable to download the list of recents, Reason:" + e.getMessage();
+                }
+                finally {
+                    if (urlConnection != null)
+                        urlConnection.disconnect();
+                }
+            }
+            return response;
+        }
+
+        /**
+         * Runs on the UI thread after {@link #doInBackground}.
+         * @param result the value returned by {@link #doInBackground}.
+         */
+        @Override
+        protected void onPostExecute(String result) {
+            // Log.i(TAG, "onPostExecute");
+
+
+
+            if (result.startsWith("Unable to")) {
+                Toast.makeText(getActivity().getApplicationContext(), result, Toast.LENGTH_LONG)
+                        .show();
+                return;
+            }
+            try {
+                mRecentList = Video.parseVideoJSON(result);
+            }
+            catch (JSONException e) {
+                Toast.makeText(getActivity().getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG)
+                        .show();
+                return;
+            }
+
+// Everything is good, show the list of courses.
+            if (!mRecentList.isEmpty()) {
+                if (mRecentDB == null) {
+                    mRecentDB = new RecentDB(mContext);
+                }
+                //Delete old data so that you can refresh the local db w/ network data.
+                //mRecentDB.deleteRecents();  #### this caused problems with table not existing
+                //also, add to local db
+                Log.e("These guys", mRecentList.toString());
+                for (int i = 0; i < mRecentList.size(); i++) {
+                    Video video = mRecentList.get(i);
+                    if (!mRecentDB.insertRecent(video.getVidId(), video.getTitle(),
+                            video.getLength(), video.getRemaining())) {
+                        Log.e("Tried to use insert.", "IT WAS NOT VERY EFFECTIVE!");
+                    }
+                }
+              //  mRecyclerView.setAdapter(new MyvideoRecyclerViewAdapter(mRecentsList, mListener));
+            }
+        }
+    }
+    private class AuthenticateTask extends AsyncTask<String, Void, String> {
 
 
         @Override
@@ -217,6 +320,7 @@ public class LoginFragment extends Fragment {
                     Toast.makeText(getApplicationContext(), "Login successful"
                             , Toast.LENGTH_LONG)
                             .show();
+
                 } else if (status.equals("registered")) {
                     Toast.makeText(getApplicationContext(), "User not found, new account made"
                             , Toast.LENGTH_LONG)
@@ -231,6 +335,7 @@ public class LoginFragment extends Fragment {
                             , Toast.LENGTH_LONG)
                             .show();
                 }
+
             } catch (JSONException e) {
                 Toast.makeText(getApplicationContext(), "Something wrong with the data" +
                         e.getMessage(), Toast.LENGTH_LONG).show();

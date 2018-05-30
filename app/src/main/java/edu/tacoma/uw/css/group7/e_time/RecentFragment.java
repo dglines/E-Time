@@ -1,6 +1,8 @@
 package edu.tacoma.uw.css.group7.e_time;
 
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -22,6 +24,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
 
+import edu.tacoma.uw.css.group7.e_time.data.RecentDB;
 import edu.tacoma.uw.css.group7.e_time.video.Video;
 
 
@@ -42,6 +45,7 @@ public class RecentFragment extends Fragment {
     private OnListFragmentInteractionListener mListener;
     private List<Video> mRecentsList;
     private RecyclerView mRecyclerView;
+    private static RecentDB mRecentDB;
 
 
     /**
@@ -98,10 +102,21 @@ public class RecentFragment extends Fragment {
             } else {
                 mRecyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
+
+            // code to pull recents list from web service
+//           RecentAsyncTask recentAsyncTask = new RecentAsyncTask();
+//            recentAsyncTask.execute(new String[]{BASE_URL + ((MainActivity)getActivity()).getUserId()});
+
+            if (mRecentDB == null) {
+                mRecentDB = new RecentDB(getActivity());
+            }
+
+            mRecentsList = mRecentDB.getRecents();
+
+            Log.e("THIS GUY", mRecentsList.toString());
+            mRecyclerView.setAdapter(new MyvideoRecyclerViewAdapter(mRecentsList, mListener));
             // meneka says to remove this
            // mRecyclerView.setAdapter(new MyvideoRecyclerViewAdapter(mRecentsList, mListener));
-            RecentAsyncTask recentAsyncTask = new RecentAsyncTask();
-            recentAsyncTask.execute(new String[]{BASE_URL + ((MainActivity)getActivity()).getUserId()});
             Toast.makeText(context,BASE_URL + ((MainActivity)getActivity()).getUserId(), Toast.LENGTH_LONG).show();
         }
         return view;
@@ -133,6 +148,12 @@ public class RecentFragment extends Fragment {
         mListener = null;
     }
 
+    /**
+     * returns a refference to the SQLite DB... probly not the best idea...
+     */
+    public static RecentDB getRecentDB() {
+        return mRecentDB;
+    }
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated

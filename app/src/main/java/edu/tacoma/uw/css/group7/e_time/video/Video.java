@@ -13,25 +13,30 @@ public class Video implements Serializable {
     public static final String VIDID = "vidId";
     public static final String LENGTH = "length";
     public static final String REMAINING = "remaining";
+    public static final String TITLE = "title";
 
     // member variables
-    private String mVidId, mLength, mRemaining;
+    private String mVidId, mTitle, mLength, mRemaining;
 
     /**
      * Constructs a video Object.
      * @param vidId the ID of the video.
      * @param length the length of the video.
      * @param remaining the time remaining in the video.
+     * @param title the title of the video.
      */
-    public Video(String vidId, String length, String remaining) {
+    public Video(String vidId, String title, String length, String remaining) {
         mVidId = vidId;
         mLength = length;
         mRemaining = remaining;
+        mTitle = title;
     }
 
-    public String getVidid() {
+    public String getVidId() {
         return mVidId;
     }
+
+    public String getTitle() {return mTitle; }
 
     public String getLength() {
         return mLength;
@@ -49,7 +54,7 @@ public class Video implements Serializable {
 
             for (int i = 0; i < arr.length(); i++) {
                 JSONObject obj = arr.getJSONObject(i);
-                Video video = new Video(obj.getString(Video.VIDID), obj.getString(Video.LENGTH)
+                Video video = new Video(obj.getString(Video.VIDID), obj.getString(Video.TITLE), obj.getString(Video.LENGTH)
                         , obj.getString(Video.REMAINING));
                 videoList.add(video);
             }
