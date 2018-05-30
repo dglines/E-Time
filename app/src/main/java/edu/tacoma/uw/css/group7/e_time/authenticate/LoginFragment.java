@@ -129,7 +129,7 @@ public class LoginFragment extends Fragment {
                     String recentURL = buildRecentURL(username);
                     UpdateDBTask nextTask = new UpdateDBTask();
                     nextTask.execute(new String[]{recentURL.toString()});
-                    mListener.login(username, pwd);
+                    //mListener.login(username, pwd);
 
                 }
             }
@@ -320,22 +320,24 @@ public class LoginFragment extends Fragment {
                     Toast.makeText(getApplicationContext(), "Login successful"
                             , Toast.LENGTH_LONG)
                             .show();
-
+                    mListener.login(username, pwd);
                 } else if (status.equals("registered")) {
-                    Toast.makeText(getApplicationContext(), "User not found, new account made"
+                    Toast.makeText(getApplicationContext(), "Please Create Account"
                             , Toast.LENGTH_LONG)
                             .show();
+                    signInButton.setText("Register");
+                    //mListener.login(username, pwd);
                 } else if (status.equals("incorrect password")) {
                     Toast.makeText(getApplicationContext(), "Incorrect password"
                             , Toast.LENGTH_LONG)
                             .show();
+
                 } else {
                     Toast.makeText(getApplicationContext(), "Failed to login "
                                     + jsonObject.get("error")
                             , Toast.LENGTH_LONG)
                             .show();
                 }
-
             } catch (JSONException e) {
                 Toast.makeText(getApplicationContext(), "Something wrong with the data" +
                         e.getMessage(), Toast.LENGTH_LONG).show();
