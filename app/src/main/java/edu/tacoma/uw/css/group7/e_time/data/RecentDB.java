@@ -80,7 +80,8 @@ public class RecentDB {
             String title = c.getString(1);
             String duration = c.getString(2);
             String currentTime = c.getString(3);
-            Video video = new Video(id, title, duration, currentTime);
+            String searchTerm = "";
+            Video video = new Video(id, title, duration, currentTime, searchTerm);
             list.add(video);
             c.moveToNext();
         }
