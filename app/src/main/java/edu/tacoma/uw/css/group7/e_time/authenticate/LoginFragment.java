@@ -109,8 +109,8 @@ public class LoginFragment extends Fragment {
         signInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String username = emailText.getText().toString();
-                String pwd = pwdText.getText().toString();
+                username = emailText.getText().toString();
+                pwd = pwdText.getText().toString();
                 if (TextUtils.isEmpty(username)) {
                     Toast.makeText(v.getContext(), "Enter valid username"
                             , Toast.LENGTH_SHORT)
