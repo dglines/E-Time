@@ -5,6 +5,8 @@
     <string name="favorites">Favorites</string>
     <string name="log_in">Log In</string>
     <string name="home">Home</string>
+    <string name="LOGIN_PREFS">edu.tacoma.uw.css.group7.e_time</string>
+    <string name="LOGGEDIN">loggedin</string>
 
     <!-- facebook -->
     <string name="facebook_app_id">199752323974466</string>
@@ -21,8 +23,6 @@
     <string name="favorite">Favorite</string>
     <string name="unfavorite">Unfavorite</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 
 </resources>

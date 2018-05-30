@@ -38,6 +38,7 @@ public class MyvideoRecyclerViewAdapter extends RecyclerView.Adapter<MyvideoRecy
         holder.mIdView.setText(mValues.get(position).getTitle());
         holder.mContentView.setText(mValues.get(position).getRemaining());
 
+
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
