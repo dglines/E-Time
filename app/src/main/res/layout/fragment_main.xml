@@ -6,6 +6,11 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true">
 
+    <edu.tacoma.uw.css.group7.e_time.clock.ClockView
+        android:layout_width="300dp"
+        android:layout_height="300dp"
+        android:layout_marginTop="50dp"
+        android:layout_centerHorizontal="true"/>
 
     <TextView
         android:id="@+id/digital_clock"
@@ -13,7 +18,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="90dp"
+        android:layout_marginTop="150dp"
         android:textColor="@android:color/black"
         android:textSize="68dp" />
 

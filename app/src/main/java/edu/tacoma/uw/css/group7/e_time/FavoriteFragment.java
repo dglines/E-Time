@@ -1,45 +1,35 @@
 package edu.tacoma.uw.css.group7.e_time;
 
 import android.content.Context;
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.Toast;
 
 
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link newTimerFragment.OnFragmentInteractionListener} interface
+ * {@link FavoriteFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link newTimerFragment#newInstance} factory method to
+ * Use the {@link FavoriteFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class newTimerFragment extends Fragment {
+public class FavoriteFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-
-    private static final String SEARCH_TERM = "searchTerm";
-    private static final String LENGTH = "length";
 
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
-    private EditText mEditDuration;
-    private EditText mEditSearchTerm;
 
-
-    public newTimerFragment() {
+    public FavoriteFragment() {
         // Required empty public constructor
     }
 
@@ -49,11 +39,11 @@ public class newTimerFragment extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment newTimerFragment.
+     * @return A new instance of fragment FavoriteFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static newTimerFragment newInstance(String param1, String param2) {
-        newTimerFragment fragment = new newTimerFragment();
+    public static FavoriteFragment newInstance(String param1, String param2) {
+        FavoriteFragment fragment = new FavoriteFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -74,32 +64,8 @@ public class newTimerFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-
-        View v = inflater.inflate(R.layout.fragment_new_timer, container, false);
-        mEditDuration = (EditText)v.findViewById(R.id.duration);
-        mEditSearchTerm = (EditText)v.findViewById(R.id.search_term);
-
-        Button button = (Button) v.findViewById(R.id.btnNewTimer);
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String searchTerm = mEditSearchTerm.getText().toString();
-                String lengthString = mEditDuration.getText().toString();
-                int duration = 0;
-                try {
-                    duration = Integer.parseInt(lengthString);
-                }catch(NumberFormatException e){
-                    Toast.makeText(v.getContext(), "Invalid input!\n" + "video length: " + duration + " term: " + searchTerm
-                            , Toast.LENGTH_LONG).show();
-                    return;
-                }
-                
-                mListener.setTimer(LENGTH, duration * 1000, SEARCH_TERM, searchTerm);
-            }
-        });
-        return v;
+        return inflater.inflate(R.layout.fragment_favorite, container, false);
     }
-
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
@@ -138,7 +104,5 @@ public class newTimerFragment extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
-
-        void setTimer(String lenTitle, int length, String termTitle, String searchTerm);
     }
 }

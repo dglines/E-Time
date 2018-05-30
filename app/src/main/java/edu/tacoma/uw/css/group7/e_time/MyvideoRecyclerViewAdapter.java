@@ -35,8 +35,8 @@ public class MyvideoRecyclerViewAdapter extends RecyclerView.Adapter<MyvideoRecy
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mValues.get(position);
-        holder.mIdView.setText(mValues.get(position).getVidid());
-        holder.mContentView.setText(mValues.get(position).getLength());
+        holder.mIdView.setText(mValues.get(position).getTitle());
+        holder.mContentView.setText(mValues.get(position).getRemaining());
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override

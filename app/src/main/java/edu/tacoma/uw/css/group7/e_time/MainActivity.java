@@ -57,7 +57,8 @@ public class MainActivity extends AppCompatActivity implements RecentFragment.On
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        final LoginButton loginButton = (LoginButton) findViewById(R.id.fblogin_button);
+
+        //final LoginButton loginButton = (LoginButton) findViewById(R.id.fblogin_button);
 
 
         String extra = getIntent().getStringExtra("userId");
@@ -152,7 +153,7 @@ public class MainActivity extends AppCompatActivity implements RecentFragment.On
         // allow switching between hamburger icon and back arrow icon
         mToggle = new ActionBarDrawerToggle(this, mDrawerLayout, 0, 0);
         mDrawerLayout.addDrawerListener(mToggle);
-
+        mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
         // sysnState allows opening and closing the nav menu
         mToggle.syncState();
         // enable a back button
@@ -199,8 +200,10 @@ public class MainActivity extends AppCompatActivity implements RecentFragment.On
         toast.show();
         Intent intent = new Intent(this, TimerActivity.class);
         intent.putExtra("vidId", item.getVidid());
-        intent.putExtra("duration", item.getLength());
-        intent.putExtra("userId", "test");
+        intent.putExtra("length", Integer.parseInt(item.getLength()));
+        intent.putExtra("userId", mUserId);
+        intent.putExtra("remainingTime", Integer.parseInt(item.getRemaining()));
+        intent.putExtra("searchTerm", item.getSearchTerm());
         startActivity(intent);
 
 

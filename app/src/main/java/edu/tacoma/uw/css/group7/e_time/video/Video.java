@@ -13,9 +13,11 @@ public class Video implements Serializable {
     public static final String VIDID = "vidId";
     public static final String LENGTH = "length";
     public static final String REMAINING = "remaining";
+    public static final String SEARCH = "search";
+    public static final String TITLE = "title";
 
     // member variables
-    private String mVidId, mLength, mRemaining;
+    private String mVidId, mTitle, mLength, mRemaining, mSearchTerm;
 
     /**
      * Constructs a video Object.
@@ -23,15 +25,19 @@ public class Video implements Serializable {
      * @param length the length of the video.
      * @param remaining the time remaining in the video.
      */
-    public Video(String vidId, String length, String remaining) {
+    public Video(String vidId, String title, String length, String remaining, String searchTerm) {
         mVidId = vidId;
+        mTitle = title;
         mLength = length;
         mRemaining = remaining;
+        mSearchTerm = searchTerm;
     }
 
     public String getVidid() {
         return mVidId;
     }
+
+    public String getTitle() { return mTitle; }
 
     public String getLength() {
         return mLength;
@@ -41,6 +47,8 @@ public class Video implements Serializable {
         return mRemaining;
     }
 
+    public String getSearchTerm() { return mSearchTerm; }
+
     public static List<Video> parseVideoJSON(String videoJSON) throws JSONException {
         List<Video> videoList = new ArrayList<Video>();
         if (videoJSON != null) {
@@ -49,8 +57,8 @@ public class Video implements Serializable {
 
             for (int i = 0; i < arr.length(); i++) {
                 JSONObject obj = arr.getJSONObject(i);
-                Video video = new Video(obj.getString(Video.VIDID), obj.getString(Video.LENGTH)
-                        , obj.getString(Video.REMAINING));
+                Video video = new Video(obj.getString(Video.VIDID), obj.getString(Video.TITLE), obj.getString(Video.LENGTH)
+                        , obj.getString(Video.REMAINING), obj.getString(Video.SEARCH));
                 videoList.add(video);
             }
 

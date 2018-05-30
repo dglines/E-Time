@@ -192,7 +192,7 @@ public class RecentFragment extends Fragment {
         protected void onPostExecute(String result) {
             // Log.i(TAG, "onPostExecute");
 
-            if (result.startsWith("Unable to")) {
+            if (result.startsWith("{\"result")) {
                 Toast.makeText(getActivity().getApplicationContext(), result, Toast.LENGTH_LONG)
                         .show();
                 return;

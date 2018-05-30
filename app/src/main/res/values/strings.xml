@@ -18,6 +18,8 @@
     <string name="play">Play</string>
     <string name="pause">Pause</string>
     <string name="goBack">Return</string>
+    <string name="favorite">Favorite</string>
+    <string name="unfavorite">Unfavorite</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

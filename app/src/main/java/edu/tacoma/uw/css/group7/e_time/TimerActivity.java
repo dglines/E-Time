@@ -27,6 +27,8 @@ import com.google.api.client.json.JsonGenerator;
 import com.google.api.client.json.JsonParser;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.youtube.YouTube;
+import com.google.api.services.youtube.model.Activity;
+import com.google.api.services.youtube.model.ResourceId;
 import com.google.api.services.youtube.model.SearchListResponse;
 import com.google.api.services.youtube.model.SearchResult;
 
@@ -53,7 +55,7 @@ import java.util.List;
  * on their GitHub: https://github.com/youtube/yt-android-player
  *
  * @author Alexander Reid
- * @version 5/18/2018
+ * @version 5/29/2018
  */
 public class TimerActivity extends YouTubeBaseActivity implements
         YouTubePlayer.OnInitializedListener,
@@ -80,8 +82,11 @@ public class TimerActivity extends YouTubeBaseActivity implements
     private YouTubePlayer mPlayer;
 
     private TextView currentVideo;
+    private TextView mCurrentVideoPosition;
     private Button playButton;
+    private Button mBtnFavorite;
     private String currentVideoId;
+    private String currentVideoTitle;
 
     private Thread mTimer;
     private int mCurrentTime;
@@ -90,6 +95,9 @@ public class TimerActivity extends YouTubeBaseActivity implements
     private boolean isPaused;
     private String mSearchTerm;
     private String mUserId;
+    private String mStartVideo;
+    private String mNextPage;
+    private int mStartingSpot;
     private Iterator<SearchResult> iterator;
 
     /**
@@ -104,7 +112,9 @@ public class TimerActivity extends YouTubeBaseActivity implements
         // Getting views
         youTubePlayerView = findViewById(R.id.youtube_view);
         currentVideo = findViewById(R.id.current_video);
+        mCurrentVideoPosition = findViewById(R.id.timer_video_information);
         playButton = findViewById(R.id.play_button);
+        mBtnFavorite = findViewById(R.id.btn_favorite);
 
         //checking for extras
         Bundle extra = getIntent().getBundleExtra("video");
@@ -112,23 +122,38 @@ public class TimerActivity extends YouTubeBaseActivity implements
         // Setting up first video
         if (extra != null)  {
             currentVideoId = extra.getString("vidId");
+            currentVideoTitle = extra.getString("vidTitle");
+            mCurrentTime = extra.getInt("remainingTime");
             mSearchTerm = extra.getString("searchTerm");
-            mCurrentTime = extra.getInt("duration");
+            mDuration = extra.getInt("length");
             mUserId = extra.getString("userId");
-            mDuration = mCurrentTime;
         } else  {
             currentVideoId = getIntent().getStringExtra("vidId");
+            currentVideoTitle = getIntent().getStringExtra("vidTitle");
             mSearchTerm = getIntent().getStringExtra("searchTerm");
-            mCurrentTime = getIntent().getIntExtra("duration", 10000);
+            mDuration = getIntent().getIntExtra("length", 10000);
+            mCurrentTime = getIntent().getIntExtra("remainingTime", mDuration);
             mUserId = getIntent().getStringExtra("userId");
-            mDuration = mCurrentTime;
         }
 
-        if (currentVideoId == null) {
-            currentVideoId = TESTING_VIDEO;
+        if (mCurrentTime > mDuration)   {
+            mCurrentTime = mDuration;
         }
+        mStartingSpot = mDuration-mCurrentTime;
+
+        if (currentVideoId == null) {
+            currentVideoId = ERROR_VID;
+            currentVideoTitle = "Testing!";
+        }
+        if (mSearchTerm == null || mSearchTerm.length() == 0)   {
+            mSearchTerm = currentVideoId;
+        }
+        mStartVideo = currentVideoId;
         if (mUserId == null)    {
             mUserId = "";
+        }
+        if (mUserId.length() == 0)  {
+            mBtnFavorite.setEnabled(false);
         }
 
         try {
@@ -157,7 +182,7 @@ public class TimerActivity extends YouTubeBaseActivity implements
                                     if (mCurrentTime < 0)  {
                                         mCurrentTime = 0;
                                         mPlayer.pause();
-                                        playButton.setText(R.string.goBack);
+                                        playButton.setEnabled(false);
                                     }
                                     ((TextView) findViewById(R.id.digital_timer)).setText(formatTime(mCurrentTime));
                                 }
@@ -173,12 +198,30 @@ public class TimerActivity extends YouTubeBaseActivity implements
         mTimer.start();
         // For the play button
         playButton.setOnClickListener(this);
+        findViewById(R.id.btn_favorite).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+        findViewById(R.id.btn_return).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
+
+        final TimerActivity that = this;
+        mBtnFavorite.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(that, "Unimplemented", Toast.LENGTH_LONG).show();
+            }
+        });
         // Initializing the YouTube player
         youTubePlayerView.initialize(DEVELOPER_KEY, this);
-
         // Enabling the button
         playButton.setEnabled(true);
-
     }
 
     @Override
@@ -204,7 +247,7 @@ public class TimerActivity extends YouTubeBaseActivity implements
 
         if (!wasRestored) {
             log("Restored!");
-            playNextVideo();
+            playNextVideo(1);
         }
         // Enable the play button
         playButton.setEnabled(true);
@@ -228,8 +271,11 @@ public class TimerActivity extends YouTubeBaseActivity implements
     /**
      * Updates the YouTube player with the next video and plays it.
      */
-    private void playNextVideo()    {
-        mPlayer.loadVideo(currentVideoId);
+    private void playNextVideo(int i)    {
+        if (i == 1)
+            mPlayer.loadVideo(currentVideoId, mStartingSpot);
+        else
+            mPlayer.loadVideo(currentVideoId);
 
     }
 
@@ -243,11 +289,9 @@ public class TimerActivity extends YouTubeBaseActivity implements
         if (mPlayer.isPlaying()) {
             mPlayer.pause();
             playButton.setText(R.string.play);
-        } else if (mCurrentTime > 0)  {
+        } else {
             mPlayer.play();
             playButton.setText(R.string.pause);
-        } else  {
-            finish();
         }
     }
 
@@ -262,7 +306,7 @@ public class TimerActivity extends YouTubeBaseActivity implements
      * Also logs the current video state.
      */
     private void updateText() {
-        currentVideo.setText("Currently Playing: " + currentVideoId);
+        currentVideo.setText("Currently Playing: " + currentVideoTitle);
         Log.v("Video State:", String.format("Current state: %s %s",
                 playerState, playbackState));
     }
@@ -414,7 +458,7 @@ public class TimerActivity extends YouTubeBaseActivity implements
         } catch (Exception e){
 
         }
-        playNextVideo();
+        playNextVideo(0);
         updateText();
         log(playerState);
     }
@@ -475,12 +519,15 @@ public class TimerActivity extends YouTubeBaseActivity implements
     }
 
     private String urlBuilder() { //addRecent.php?userId=<userid>&vidId=<vidid>&length=<length>&remaining=<remaining(float)>
-
+        int remainingTime = mCurrentTime;
+        int newDuration = remainingTime + mPlayer.getCurrentTimeMillis();
         String url = BASE_URL + "addRecent.php?"
                 + "userId=" + mUserId
                 + "&vidId=" + currentVideoId
-                + "&length=" + mDuration
-                + "&remaining=" + mCurrentTime;
+                + "&title=" + currentVideoTitle
+                + "&length=" + newDuration
+                + "&remaining=" + remainingTime
+                + "&search=" + mSearchTerm;
         //Toast.makeText(getApplicationContext(), url, Toast.LENGTH_LONG).show();
         return url;
     }
@@ -495,8 +542,8 @@ public class TimerActivity extends YouTubeBaseActivity implements
 
         @Override
         protected Boolean doInBackground(Void...voids) {
-            String response = "";
             if (mSearchTerm != null && mSearchTerm.length() > 0) {
+                SearchResult sr = null;
                 if (iterator == null || !iterator.hasNext()) {
                     try {
                         youtube = new YouTube.Builder(new NetHttpTransport(),
@@ -509,14 +556,22 @@ public class TimerActivity extends YouTubeBaseActivity implements
                         YouTube.Search.List search = youtube.search().list("id,snippet");
                         search.setKey(DEVELOPER_KEY);
                         search.setQ(mSearchTerm);
+                        search.setType("video");
                         search.setFields("items(id/kind,id/videoId,snippet/title,snippet/thumbnails/default/url)");
                         search.setMaxResults(NUMBER_OF_VIDEOS_RETURNED);
+                        if (mNextPage != null && mNextPage.length() > 0)
+                            search.setPageToken(mNextPage);
                         SearchListResponse resp = search.execute();
+                        mNextPage = resp.getNextPageToken();
                         List<SearchResult> results = resp.getItems();
                         if (results != null) {
                             iterator = results.iterator();
-                            if (iterator.hasNext())
-                                currentVideoId = iterator.next().getId().getVideoId();
+                            boolean videoFound = false;
+                            if (iterator.hasNext()) {
+                                sr = iterator.next();
+                                currentVideoId = sr.getId().getVideoId();
+                                currentVideoTitle = sr.getSnippet().getTitle();
+                            }
                         } else {
                             currentVideoId = ERROR_VID;
                         }
@@ -526,7 +581,9 @@ public class TimerActivity extends YouTubeBaseActivity implements
                         return false;
                     }
                 } else  {
-                    currentVideoId = iterator.next().getId().getVideoId();
+                    sr = iterator.next();
+                    currentVideoId = sr.getId().getVideoId();
+                    currentVideoTitle = sr.getSnippet().getTitle();
                 }
             } else  {
                 currentVideoId = ERROR_VID;
@@ -544,26 +601,7 @@ public class TimerActivity extends YouTubeBaseActivity implements
          */
         @Override
         protected void onPostExecute(Boolean result) {
-//            // Something wrong with the network or the URL.
-//            try {
-//                JSONObject jsonObject = new JSONObject(result);
-//                String status = (String) jsonObject.get(result);
-//                if (status.equals("success")) {
-//                    Toast.makeText(getApplicationContext(), "Recent entry saved."
-//                            , Toast.LENGTH_LONG)
-//                            .show();
-//                } else {
-//                    Toast.makeText(getApplicationContext(), "Failed to add: "
-//                                    + jsonObject.get("error")
-//                            , Toast.LENGTH_LONG)
-//                            .show();
-//                }
-//            } catch (JSONException e) {
-//                Toast.makeText(getApplicationContext(), "Something wrong with the data" +
-//                        e.getMessage(), Toast.LENGTH_LONG).show();
-//            }
-//            // Everything is good, show the list of courses.
-            //REEEEE
+            //Unimplemented.
         }
     }
 
@@ -613,26 +651,7 @@ public class TimerActivity extends YouTubeBaseActivity implements
          */
         @Override
         protected void onPostExecute(String result) {
-//            // Something wrong with the network or the URL.
-//            try {
-//                JSONObject jsonObject = new JSONObject(result);
-//                String status = (String) jsonObject.get(result);
-//                if (status.equals("success")) {
-//                    Toast.makeText(getApplicationContext(), "Recent entry saved."
-//                            , Toast.LENGTH_LONG)
-//                            .show();
-//                } else {
-//                    Toast.makeText(getApplicationContext(), "Failed to add: "
-//                                    + jsonObject.get("error")
-//                            , Toast.LENGTH_LONG)
-//                            .show();
-//                }
-//            } catch (JSONException e) {
-//                Toast.makeText(getApplicationContext(), "Something wrong with the data" +
-//                        e.getMessage(), Toast.LENGTH_LONG).show();
-//            }
-//            // Everything is good, show the list of courses.
-            //REEEEE
+            //Nothing to see here.
         }
     }
 }
