@@ -51,7 +51,7 @@ public class RecentDB {
      */
     public void deleteRecents() {
         if (mSQLiteDatabase == null) return;
-        mSQLiteDatabase.delete(RECENT_TABLE, null, null);
+        mRecentDBHelper.onUpgrade(mSQLiteDatabase, 1, 1);
     }
 
     /**

@@ -1,6 +1,7 @@
 package edu.tacoma.uw.css.group7.e_time;
 
 import android.app.Activity;
+import android.content.ClipData;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -72,7 +73,10 @@ public class MainActivity extends AppCompatActivity implements RecentFragment.On
         } else  {
             mLoggedIn = false;
         }
-
+        if (mLoggedIn)
+            ((NavigationView)findViewById(R.id.nav_view)).getMenu().findItem(R.id.log_In).setTitle("Log out");
+        else
+            ((NavigationView)findViewById(R.id.nav_view)).getMenu().findItem(R.id.log_In).setTitle("Login");
         // begin by launching home fragment
         MainFragment mainFragment = new MainFragment();
         getSupportFragmentManager()
@@ -119,7 +123,6 @@ public class MainActivity extends AppCompatActivity implements RecentFragment.On
 
                         // close drawer if item selected
                         mDrawerLayout.closeDrawers();
-
                         // we can add code here to swap FRAGMENTS, or maybe activities
                         // based on the item selected
                         // here's a Toast to demonstrate this:
@@ -167,6 +170,7 @@ public class MainActivity extends AppCompatActivity implements RecentFragment.On
         mToggle.syncState();
         // enable a back button
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
 
     }
 

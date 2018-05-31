@@ -2,6 +2,7 @@ package edu.tacoma.uw.css.group7.e_time;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -18,38 +19,25 @@ import com.google.android.youtube.player.YouTubePlayer.PlayerStyle;
 import com.google.android.youtube.player.YouTubePlayer.PlaylistEventListener;
 import com.google.android.youtube.player.YouTubePlayerView;
 import com.google.api.client.http.HttpRequest;
-import com.google.api.client.http.HttpTransport;
-import com.google.api.client.http.LowLevelHttpRequest;
 import com.google.api.client.http.javanet.NetHttpTransport;
-import com.google.api.client.json.JsonFactory;
 import com.google.api.client.http.HttpRequestInitializer;
-import com.google.api.client.json.JsonGenerator;
-import com.google.api.client.json.JsonParser;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.youtube.YouTube;
-import com.google.api.services.youtube.model.Activity;
-import com.google.api.services.youtube.model.ResourceId;
 import com.google.api.services.youtube.model.SearchListResponse;
 import com.google.api.services.youtube.model.SearchResult;
 
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.Reader;
-import java.io.Writer;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.nio.charset.Charset;
 import java.util.Iterator;
 import java.util.List;
 
 import edu.tacoma.uw.css.group7.e_time.data.RecentDB;
+import edu.tacoma.uw.css.group7.e_time.video.Video;
 
 /**
  * TimerActivity handles the YouTube timer for the E-Time app.
@@ -69,138 +57,55 @@ public class TimerActivity extends YouTubeBaseActivity implements
     // Developer Key for YouTube API
     private static final String DEVELOPER_KEY = "AIzaSyC-DjQD5CVAU9ufKS1ZRah_0NYM40FSwu4";
 
-    // Test Video IDs
-    private static final String DEFAULT_VIDEO = "BJ0xBCwkg3E";  //Running in the 90s
-    private static final String TESTING_VIDEO = "5xRCR3r4pGg";  //Music for testing
-    private static final String ERROR_VID = "oHg5SJYRHA0"; //Not a meme
+    // Default video ID if something breaks
+    private static final String ERROR_VID = "oHg5SJYRHA0";
+
+    // Number of videos requested at a time
     private static final long NUMBER_OF_VIDEOS_RETURNED = 10;
 
+    // Base URL for communicating with the database
     private static final String BASE_URL = "http://olivep3.000webhostapp.com/Android/"; // addRecent.php?userId=<userid>&vidId=<vidid>&length=<length>&remaining=<remaining(float)>
 
+    // Youtube class variable
     private static YouTube youtube;
 
     // YouTube player object and view
     private YouTubePlayerView youTubePlayerView;
     private YouTubePlayer mPlayer;
 
-    private TextView currentVideo;
+    // Other views
+    private TextView mCurrentVideo;
     private TextView mCurrentVideoPosition;
-    private Button playButton;
+    private Button mBtnPlay;
     private Button mBtnFavorite;
-    private String currentVideoId;
-    private String currentVideoTitle;
+
+    private String mCurrentVideoId;
+    private String mCurrentVideoTitle;
 
     private Thread mTimer;
     private int mCurrentTime;
     private int mDuration;
-    private String mTitle;
     private long mTimeOfLastUpdate;
-    private boolean isPaused;
     private String mSearchTerm;
     private String mUserId;
-    private String mStartVideo;
     private String mNextPage;
     private int mStartingSpot;
     private Iterator<SearchResult> iterator;
 
-    /**
-     * Sets up the video player and timer
-     * @param savedInstanceState - Saved instance data.
-     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_timer);
 
         // Getting views
-        youTubePlayerView = findViewById(R.id.youtube_view);
-        currentVideo = findViewById(R.id.current_video);
-        mCurrentVideoPosition = findViewById(R.id.timer_video_information);
-        playButton = findViewById(R.id.play_button);
-        mBtnFavorite = findViewById(R.id.btn_favorite);
+        findViews();
 
-        //checking for extras
-        Bundle extra = getIntent().getBundleExtra("video");
+        // Initial setup
+        initialize();
 
-        // Setting up first video
-        if (extra != null)  {
-            currentVideoId = extra.getString("vidId");
-            currentVideoTitle = extra.getString("vidTitle");
-            mCurrentTime = extra.getInt("remainingTime");
-            mSearchTerm = extra.getString("searchTerm");
-            mDuration = extra.getInt("length");
-            mUserId = extra.getString("userId");
-        } else  {
-            currentVideoId = getIntent().getStringExtra("vidId");
-            currentVideoTitle = getIntent().getStringExtra("vidTitle");
-            mSearchTerm = getIntent().getStringExtra("searchTerm");
-            mDuration = getIntent().getIntExtra("length", 10000);
-            mCurrentTime = getIntent().getIntExtra("remainingTime", mDuration);
-            mUserId = getIntent().getStringExtra("userId");
-        }
-
-        if (mCurrentTime > mDuration)   {
-            mCurrentTime = mDuration;
-        }
-        mStartingSpot = mDuration-mCurrentTime;
-
-        if (currentVideoId == null) {
-            currentVideoId = ERROR_VID;
-            currentVideoTitle = "Testing!";
-        }
-        if (mSearchTerm == null || mSearchTerm.length() == 0)   {
-            mSearchTerm = currentVideoId;
-        }
-        mStartVideo = currentVideoId;
-        if (mUserId == null)    {
-            mUserId = "";
-        }
-        if (mUserId.length() == 0)  {
-            mBtnFavorite.setEnabled(false);
-        }
-
-        try {
-            Object result = new SearchTask().execute().get();
-        } catch (Exception e)   {
-            // REEEEE
-        }
-
-
-        mTimeOfLastUpdate = System.currentTimeMillis();
-        isPaused = true;
-        // thread used to update clock display
-        mTimer = new Thread()    {
-            @Override
-            public void run()   {
-                try {
-                    while(!isInterrupted()) {
-                        Thread.sleep(1000);
-                        runOnUiThread(new Runnable()    {
-                            @Override
-                            public void run() {
-                                long time = System.currentTimeMillis();
-                                long tick = time - mTimeOfLastUpdate;
-                                if (findViewById(R.id.digital_timer) != null && mPlayer.isPlaying()) {
-                                    mCurrentTime -= (tick);
-                                    if (mCurrentTime < 0)  {
-                                        mCurrentTime = 0;
-                                        mPlayer.pause();
-                                        playButton.setEnabled(false);
-                                    }
-                                    ((TextView) findViewById(R.id.digital_timer)).setText(formatTime(mCurrentTime));
-                                }
-                                mTimeOfLastUpdate = time;
-                            }
-                        });
-                    }
-                } catch (InterruptedException e)    {
-                    //Thread interrupted before clock reset
-                }
-            }
-        };
-        mTimer.start();
+        startTimer();
         // For the play button
-        playButton.setOnClickListener(this);
+        mBtnPlay.setOnClickListener(this);
         findViewById(R.id.btn_favorite).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -223,8 +128,8 @@ public class TimerActivity extends YouTubeBaseActivity implements
         });
         // Initializing the YouTube player
         youTubePlayerView.initialize(DEVELOPER_KEY, this);
-        // Enabling the button
-        playButton.setEnabled(true);
+        // Enabling the play button
+        mBtnPlay.setEnabled(true);
     }
 
     @Override
@@ -233,7 +138,106 @@ public class TimerActivity extends YouTubeBaseActivity implements
         super.onDestroy();
     }
 
-    /**4
+    /**
+     * Assigns all the view fields to their respective views.
+     */
+    public void findViews() {
+        youTubePlayerView = findViewById(R.id.youtube_view);
+        mCurrentVideo = findViewById(R.id.current_video);
+        mCurrentVideoPosition = findViewById(R.id.timer_video_information);
+        mBtnPlay = findViewById(R.id.play_button);
+        mBtnFavorite = findViewById(R.id.btn_favorite);
+    }
+
+    /**
+     * Sets up the initial states for the fields and launches the search async task
+     */
+    public void initialize() {
+        Bundle extra = getIntent().getBundleExtra("video");
+
+        if (extra != null)  { //Bundle extra exists, get data and store in proper fields.
+            mCurrentVideoId = extra.getString("vidId");
+            mCurrentVideoTitle = extra.getString("vidTitle");
+            mCurrentTime = extra.getInt("remainingTime");
+            mSearchTerm = extra.getString("searchTerm");
+            mDuration = extra.getInt("length");
+            mUserId = extra.getString("userId");
+        } else  { // Bundle was not used.
+            mCurrentVideoId = getIntent().getStringExtra("vidId");
+            mCurrentVideoTitle = getIntent().getStringExtra("vidTitle");
+            mSearchTerm = getIntent().getStringExtra("searchTerm");
+            mDuration = getIntent().getIntExtra("length", 10000);
+            mCurrentTime = getIntent().getIntExtra("remainingTime", mDuration);
+            mUserId = getIntent().getStringExtra("userId");
+        }
+
+        if (mCurrentTime > mDuration)   {
+            mCurrentTime = mDuration;
+        }
+        mStartingSpot = mDuration-mCurrentTime;
+
+        if (mCurrentVideoId == null) {
+            mCurrentVideoId = ERROR_VID;
+            mCurrentVideoTitle = "Testing!";
+        }
+        if (mSearchTerm == null || mSearchTerm.length() == 0)   {
+            mSearchTerm = mCurrentVideoId;
+        }
+        if (mUserId == null)    {
+            mUserId = "";
+        }
+        if (mUserId.length() == 0)  {
+            mBtnFavorite.setEnabled(false);
+        }
+
+        //Bad code that waits for the search async task to finish
+        try {
+            Object result = new SearchTask().execute().get();
+        } catch (Exception e)   {
+            // REEEEE
+        }
+    }
+
+    /**
+     * Starts a thread that updates the timer every 500 milliseconds.
+     */
+    public void startTimer()    {
+
+        mTimeOfLastUpdate = System.currentTimeMillis();
+        // thread used to update clock display
+        mTimer = new Thread()    {
+            @Override
+            public void run()   {
+                try {
+                    while(!isInterrupted()) {
+                        runOnUiThread(new Runnable()    {
+                            @Override
+                            public void run() {
+                                long time = System.currentTimeMillis();
+                                long tick = time - mTimeOfLastUpdate;
+                                if (findViewById(R.id.digital_timer) != null && mPlayer != null && mPlayer.isPlaying()) {
+                                    mCurrentTime -= (tick);
+                                    if (mCurrentTime < 0)  {
+                                        mCurrentTime = 0;
+                                        mPlayer.pause();
+                                        mBtnPlay.setEnabled(false);
+                                    }
+                                    ((TextView) findViewById(R.id.digital_timer)).setText(formatTime(mCurrentTime));
+                                }
+                                mTimeOfLastUpdate = time;
+                            }
+                        });
+                        Thread.sleep(500);
+                    }
+                } catch (InterruptedException e)    {
+                    //Thread interrupted before clock reset
+                }
+            }
+        };
+        mTimer.start();
+    }
+
+    /**
      * On success, the YouTube player is configured and listeners are set.
      * @param provider The YouTube Provider
      * @param player The YouTubePlayer inside the YouTubeView
@@ -253,7 +257,7 @@ public class TimerActivity extends YouTubeBaseActivity implements
             playNextVideo(1);
         }
         // Enable the play button
-        playButton.setEnabled(true);
+        mBtnPlay.setEnabled(true);
     }
 
     /**
@@ -276,9 +280,9 @@ public class TimerActivity extends YouTubeBaseActivity implements
      */
     private void playNextVideo(int i)    {
         if (i == 1)
-            mPlayer.loadVideo(currentVideoId, mStartingSpot);
+            mPlayer.loadVideo(mCurrentVideoId, mStartingSpot);
         else
-            mPlayer.loadVideo(currentVideoId);
+            mPlayer.loadVideo(mCurrentVideoId);
 
     }
 
@@ -291,10 +295,10 @@ public class TimerActivity extends YouTubeBaseActivity implements
     public void onClick(View v) {
         if (mPlayer.isPlaying()) {
             mPlayer.pause();
-            playButton.setText(R.string.play);
+            mBtnPlay.setText(R.string.play);
         } else {
             mPlayer.play();
-            playButton.setText(R.string.pause);
+            mBtnPlay.setText(R.string.pause);
         }
     }
 
@@ -309,7 +313,7 @@ public class TimerActivity extends YouTubeBaseActivity implements
      * Also logs the current video state.
      */
     private void updateText() {
-        currentVideo.setText("Currently Playing: " + currentVideoTitle);
+        mCurrentVideo.setText(String.format(getString(R.string.currently_playing), mCurrentVideoTitle));
         Log.v("Video State:", String.format("Current state: %s %s",
                 playerState, playbackState));
     }
@@ -424,7 +428,7 @@ public class TimerActivity extends YouTubeBaseActivity implements
      */
     @Override
     public void onLoaded(String videoId) {
-        currentVideoId = videoId;
+        mCurrentVideoId = videoId;
         playerState = String.format("Loaded: %s", videoId);
         updateText();
         log(playerState);
@@ -475,7 +479,7 @@ public class TimerActivity extends YouTubeBaseActivity implements
         playerState = "Error : (" + reason + ")";
         if (reason == ErrorReason.UNEXPECTED_SERVICE_DISCONNECTION) {
             mPlayer = null;
-            currentVideo.setText("ERROR: Service Disconnected!");
+            mCurrentVideo.setText("ERROR: Service Disconnected!");
         }
         updateText();
         log(playerState);
@@ -511,14 +515,14 @@ public class TimerActivity extends YouTubeBaseActivity implements
     //***END PLAYLIST LISTENERS***//
 
     private void addRecent()    {
-        if (!mUserId.equals("")) {
+        //if (!mUserId.equals("")) {
             AddRecentTask task = new AddRecentTask();
             String url = urlBuilder();
             Log.e("databaseURL",url);
             task.execute(new String[]{url.toString()});
-        } else  {
-            Log.e("TimerActivity", "Bad user ID: \" " + mUserId.toString() + "\"");
-        }
+//        } else  {
+//            Log.e("TimerActivity", "Bad user ID: \" " + mUserId.toString() + "\"");
+//        }
 
     }
 
@@ -527,18 +531,22 @@ public class TimerActivity extends YouTubeBaseActivity implements
         int newDuration = remainingTime + mPlayer.getCurrentTimeMillis();
         String url = BASE_URL + "addRecent.php?"
                 + "userId=" + mUserId
-                + "&vidId=" + currentVideoId
-                + "&title=" + currentVideoTitle
+                + "&vidId=" + mCurrentVideoId
+                + "&title=" + mCurrentVideoTitle
                 + "&length=" + newDuration
                 + "&remaining=" + remainingTime
                 + "&search=" + mSearchTerm;
 
         RecentDB recentDB = RecentFragment.getRecentDB();
-        String duration = "" + mDuration;
+        if (recentDB == null)   {
+            recentDB = new RecentFragment().getRecentDB();
+        }
+        String duration = "" + newDuration;
         String currTime = "" + mCurrentTime;
-        recentDB.insertRecent(currentVideoId, currentVideoTitle, duration, currTime);
-
-        //Toast.makeText(getApplicationContext(), url, Toast.LENGTH_LONG).show();
+        String vidTitle = mCurrentVideoTitle;
+        if (vidTitle.length() > 20)
+            vidTitle = vidTitle.substring(0,17) + "...";
+        recentDB.insertRecent(mCurrentVideoId, vidTitle, duration, currTime);
         return url;
     }
 
@@ -579,12 +587,11 @@ public class TimerActivity extends YouTubeBaseActivity implements
                             boolean videoFound = false;
                             if (iterator.hasNext()) {
                                 sr = iterator.next();
-                                currentVideoId = sr.getId().getVideoId();
-                                currentVideoTitle = sr.getSnippet().getTitle();
+                                mCurrentVideoId = sr.getId().getVideoId();
+                                mCurrentVideoTitle = sr.getSnippet().getTitle();
                             }
                         } else {
-                            currentVideoId = ERROR_VID;
-                            mTitle = "";
+                            mCurrentVideoId = ERROR_VID;
                         }
                     } catch (Exception e) {
                         Log.e("YouTubeBuilder", "FAILURE!");
@@ -593,11 +600,11 @@ public class TimerActivity extends YouTubeBaseActivity implements
                     }
                 } else  {
                     sr = iterator.next();
-                    currentVideoId = sr.getId().getVideoId();
-                    currentVideoTitle = sr.getSnippet().getTitle();
+                    mCurrentVideoId = sr.getId().getVideoId();
+                    mCurrentVideoTitle = sr.getSnippet().getTitle();
                 }
             } else  {
-                currentVideoId = ERROR_VID;
+                mCurrentVideoId = ERROR_VID;
             }
             return true;
         }

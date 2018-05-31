@@ -11,4 +11,14 @@
     DROP TABLE IF EXISTS Recent
 </string>
 
+    <string name="ADD_VID">
+    ADD INTO Recent (vidId, title, duration, currentTime)
+    VALUES (%1$s, %2$s, %3$s, %4$s)
+    </string>
+
+    <string name="REPLACE_VID">
+    INSERT OR REPLACE INTO Recent (vidId, title, duration, currentTime)
+    VALUES ('%1$s', '%2$s', '%3$s', '%4$s')
+    </string>
+
 </resources>

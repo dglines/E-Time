@@ -117,29 +117,29 @@ public class MainFragment extends Fragment {
         }
 
         // thread used to update clock display
-        mClock = new Thread()    {
-            @Override
-            public void run()   {
-                try {
-                    while(!isInterrupted()) {
-                        Thread.sleep(1000);
-                        mActivity.runOnUiThread(new Runnable()    {
-                            @Override
-                            public void run() {
-                                if (mActivity.findViewById(R.id.digital_clock) != null) {
-                                    long date = System.currentTimeMillis();
-                                    SimpleDateFormat sdf = new SimpleDateFormat("hh:mm");
-                                    ((TextView) mActivity.findViewById(R.id.digital_clock)).setText(sdf.format(date));
-                                }
-                            }
-                        });
-                    }
-                } catch (InterruptedException e)    {
-                    //Thread interrupted before clock reset
-                }
-            }
-        };
-        mClock.start();
+//        mClock = new Thread()    {
+//            @Override
+//            public void run()   {
+//                try {
+//                    while(!isInterrupted()) {
+//                        Thread.sleep(1000);
+//                        mActivity.runOnUiThread(new Runnable()    {
+//                            @Override
+//                            public void run() {
+//                                if (mActivity.findViewById(R.id.digital_clock) != null) {
+//                                    long date = System.currentTimeMillis();
+//                                    SimpleDateFormat sdf = new SimpleDateFormat("hh:mm");
+//                                    ((TextView) mActivity.findViewById(R.id.digital_clock)).setText(sdf.format(date));
+//                                }
+//                            }
+//                        });
+//                    }
+//                } catch (InterruptedException e)    {
+//                    //Thread interrupted before clock reset
+//                }
+//            }
+//        };
+//        mClock.start();
 
         return v;
     }
@@ -180,7 +180,7 @@ public class MainFragment extends Fragment {
 
     @Override
     public void onDestroy() {
-        mClock.interrupt();
+        //mClock.interrupt();
         super.onDestroy();
     }
 

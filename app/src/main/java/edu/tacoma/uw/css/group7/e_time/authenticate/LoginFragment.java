@@ -254,23 +254,27 @@ public class LoginFragment extends Fragment {
             }
 
 // Everything is good, show the list of courses.
-            if (!mRecentList.isEmpty()) {
-                if (mRecentDB == null) {
-                    mRecentDB = new RecentDB(mContext);
-                }
-                //Delete old data so that you can refresh the local db w/ network data.
-                //mRecentDB.deleteRecents();  #### this caused problems with table not existing
-                //also, add to local db
-                Log.e("These guys", mRecentList.toString());
-                for (int i = 0; i < mRecentList.size(); i++) {
-                    Video video = mRecentList.get(i);
-                    if (!mRecentDB.insertRecent(video.getVidId(), video.getTitle(),
-                            video.getLength(), video.getRemaining())) {
-                        Log.e("Tried to use insert.", "IT WAS NOT VERY EFFECTIVE!");
+                if (!mRecentList.isEmpty()) {
+                    if (mRecentDB == null) {
+                        mRecentDB = new RecentDB(mContext);
                     }
+                    //Delete old data so that you can refresh the local db w/ network data.
+                    mRecentDB.deleteRecents();  //#### this caused problems with table not existing
+                    //also, add to local db
+                    Log.e("These guys", mRecentList.toString());
+                    for (int i = 0; i < mRecentList.size(); i++) {
+                        Video video = mRecentList.get(i);
+                        String vidTitle = video.getTitle();
+                        if (vidTitle != null && vidTitle.length() > 20)
+                            vidTitle = vidTitle.substring(0, 17) + "...";
+                        if (!mRecentDB.insertRecent(video.getVidId(), vidTitle,
+                                video.getLength(), video.getRemaining())) {
+                            Log.e("Tried to use insert.", "IT WAS NOT VERY EFFECTIVE!");
+                        }
+                    }
+                    //  mRecyclerView.setAdapter(new MyvideoRecyclerViewAdapter(mRecentsList, mListener));
                 }
-              //  mRecyclerView.setAdapter(new MyvideoRecyclerViewAdapter(mRecentsList, mListener));
-            }
+
         }
     }
     private class AuthenticateTask extends AsyncTask<String, Void, String> {

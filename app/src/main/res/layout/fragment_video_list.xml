@@ -6,8 +6,7 @@
     android:name="edu.tacoma.uw.css.group7.e_time.videoFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginLeft="16dp"
-    android:layout_marginRight="16dp"
+    android:background="#2C2F33"
     app:layoutManager="LinearLayoutManager"
     tools:context=".RecentFragment"
     tools:listitem="@layout/fragment_video" />
