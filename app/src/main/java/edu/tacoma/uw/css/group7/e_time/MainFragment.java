@@ -13,12 +13,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.facebook.CallbackManager;
-
-
-import java.text.SimpleDateFormat;
-
-
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
@@ -40,12 +34,7 @@ public class MainFragment extends Fragment {
 
     private TextView mLoginText;
 
-    private CallbackManager callbackManager;
-
     private OnFragmentInteractionListener mListener;
-
-    private Thread mClock;
-
 
 
     public MainFragment() {
@@ -116,40 +105,11 @@ public class MainFragment extends Fragment {
             mLoginText.setText("Not Logged In");
         }
 
-        // thread used to update clock display
-//        mClock = new Thread()    {
-//            @Override
-//            public void run()   {
-//                try {
-//                    while(!isInterrupted()) {
-//                        Thread.sleep(1000);
-//                        mActivity.runOnUiThread(new Runnable()    {
-//                            @Override
-//                            public void run() {
-//                                if (mActivity.findViewById(R.id.digital_clock) != null) {
-//                                    long date = System.currentTimeMillis();
-//                                    SimpleDateFormat sdf = new SimpleDateFormat("hh:mm");
-//                                    ((TextView) mActivity.findViewById(R.id.digital_clock)).setText(sdf.format(date));
-//                                }
-//                            }
-//                        });
-//                    }
-//                } catch (InterruptedException e)    {
-//                    //Thread interrupted before clock reset
-//                }
-//            }
-//        };
-//        mClock.start();
+
 
         return v;
     }
 
-
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
 
     /**
      * Called when a fragment is first attached to its context.

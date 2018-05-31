@@ -64,7 +64,7 @@ public class ClockTextView extends View {
     private void drawTime(Canvas canvas)    {
         paint.reset();
         Calendar c = Calendar.getInstance();
-        timeText = String.format("%2d:%2d", c.get(Calendar.HOUR_OF_DAY),c.get(Calendar.MINUTE));
+        timeText = String.format("%02d:%02d", c.get(Calendar.HOUR_OF_DAY),c.get(Calendar.MINUTE));
 
         paint.setTextSize(fontSize);
         paint.setTextAlign(Paint.Align.CENTER);

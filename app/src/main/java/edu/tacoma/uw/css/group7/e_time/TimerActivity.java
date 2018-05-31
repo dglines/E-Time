@@ -3,7 +3,6 @@ package edu.tacoma.uw.css.group7.e_time;
 import android.app.Activity;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -38,7 +37,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import edu.tacoma.uw.css.group7.e_time.data.RecentDB;
-import edu.tacoma.uw.css.group7.e_time.video.Video;
 
 /**
  * TimerActivity handles the YouTube timer for the E-Time app.
@@ -76,22 +74,21 @@ public class TimerActivity extends YouTubeBaseActivity implements
 
     // Other views
     private TextView mCurrentVideo;
-    private TextView mCurrentVideoPosition;
-    private Button mBtnPlay;
     private Button mBtnFavorite;
+    private Button mBtnPlay;
 
+    // Necessary fields
+    private Iterator<SearchResult> mIterator;
+    private Thread mTimer;
     private String mCurrentVideoId;
     private String mCurrentVideoTitle;
-
-    private Thread mTimer;
-    private int mCurrentTime;
-    private int mDuration;
-    private long mTimeOfLastUpdate;
+    private String mNextPage;
     private String mSearchTerm;
     private String mUserId;
-    private String mNextPage;
+    private long mTimeOfLastUpdate;
+    private int mCurrentTime;
+    private int mDuration;
     private int mStartingSpot;
-    private Iterator<SearchResult> iterator;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -120,7 +117,6 @@ public class TimerActivity extends YouTubeBaseActivity implements
             }
         });
 
-        final TimerActivity that = this;
         mBtnFavorite.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -134,7 +130,7 @@ public class TimerActivity extends YouTubeBaseActivity implements
                             + "&search=" + mSearchTerm
                             + "&vidId=" + mCurrentVideoId
                             + "&length=" + mDuration;
-                    task.execute(new String[]{favsURL.toString()});
+                    task.execute(new String[]{favsURL});
 
                 }
             }
@@ -157,7 +153,6 @@ public class TimerActivity extends YouTubeBaseActivity implements
     public void findViews() {
         youTubePlayerView = findViewById(R.id.youtube_view);
         mCurrentVideo = findViewById(R.id.current_video);
-        mCurrentVideoPosition = findViewById(R.id.timer_video_information);
         mBtnPlay = findViewById(R.id.play_button);
         mBtnFavorite = findViewById(R.id.btn_favorite);
     }
@@ -547,6 +542,9 @@ public class TimerActivity extends YouTubeBaseActivity implements
 
     //***END PLAYLIST LISTENERS***//
 
+    /**
+     * Adds the current timer to the recent timer list using an AsyncTask
+     */
     private void addRecent()    {
         //if (!mUserId.equals("")) {
             AddRecentTask task = new AddRecentTask();
@@ -559,6 +557,10 @@ public class TimerActivity extends YouTubeBaseActivity implements
 
     }
 
+    /**
+     * Creates a url that is used to communicate to our database.
+     * @return String - Contains the url
+     */
     private String urlBuilder() { //addRecent.php?userId=<userid>&vidId=<vidid>&length=<length>&remaining=<remaining(float)>
         int remainingTime = mCurrentTime;
         int newDuration = remainingTime + mPlayer.getCurrentTimeMillis();
@@ -584,6 +586,10 @@ public class TimerActivity extends YouTubeBaseActivity implements
         return url;
     }
 
+    /**
+     * An AsyncTask that pulls a list of YouTube videos using the Google API.  The results are
+     * stored in an iterator.
+     */
     private class SearchTask extends AsyncTask<Void, Void, Boolean> {
 
 
@@ -596,7 +602,7 @@ public class TimerActivity extends YouTubeBaseActivity implements
         protected Boolean doInBackground(Void...voids) {
             if (mSearchTerm != null && mSearchTerm.length() > 0) {
                 SearchResult sr = null;
-                if (iterator == null || !iterator.hasNext()) {
+                if (mIterator == null || !mIterator.hasNext()) {
                     try {
                         youtube = new YouTube.Builder(new NetHttpTransport(),
                                 new JacksonFactory(),
@@ -617,10 +623,10 @@ public class TimerActivity extends YouTubeBaseActivity implements
                         mNextPage = resp.getNextPageToken();
                         List<SearchResult> results = resp.getItems();
                         if (results != null) {
-                            iterator = results.iterator();
+                            mIterator = results.iterator();
                             boolean videoFound = false;
-                            if (iterator.hasNext()) {
-                                sr = iterator.next();
+                            if (mIterator.hasNext()) {
+                                sr = mIterator.next();
                                 mCurrentVideoId = sr.getId().getVideoId();
                                 mCurrentVideoTitle = sr.getSnippet().getTitle();
                             }
@@ -633,7 +639,7 @@ public class TimerActivity extends YouTubeBaseActivity implements
                         return false;
                     }
                 } else  {
-                    sr = iterator.next();
+                    sr = mIterator.next();
                     mCurrentVideoId = sr.getId().getVideoId();
                     mCurrentVideoTitle = sr.getSnippet().getTitle();
                 }
@@ -657,6 +663,9 @@ public class TimerActivity extends YouTubeBaseActivity implements
         }
     }
 
+    /**
+     * An AsyncTask that adds the timer to the recents list.
+     */
     private class AddRecentTask extends AsyncTask<String, Void, String> {
 
         @Override
@@ -707,6 +716,10 @@ public class TimerActivity extends YouTubeBaseActivity implements
         }
     }
     private final Activity that = this;
+
+    /**
+     * An AsyncTask that is used to add a timer to the favorite menu.
+     */
     private class AddFavoriteTask extends AsyncTask<String, Void, String> {
         @Override
         protected void onPreExecute() {

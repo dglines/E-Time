@@ -1,12 +1,10 @@
 package edu.tacoma.uw.css.group7.e_time;
 
 import android.app.Activity;
-import android.content.ClipData;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
-import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
@@ -15,9 +13,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.EditText;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
@@ -25,7 +20,6 @@ import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
-import com.facebook.login.widget.LoginButton;
 
 import edu.tacoma.uw.css.group7.e_time.authenticate.SignInActivity;
 import edu.tacoma.uw.css.group7.e_time.video.Video;
@@ -62,8 +56,6 @@ public class MainActivity extends AppCompatActivity implements RecentFragment.On
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        //final LoginButton loginButton = (LoginButton) findViewById(R.id.fblogin_button);
 
 
         String extra = getIntent().getStringExtra("userId");
@@ -253,18 +245,7 @@ public class MainActivity extends AppCompatActivity implements RecentFragment.On
 
     }
 
-    public void newTimer(View view)   {
-        Intent intent = new Intent(this, TimerActivity.class);
-        intent.putExtra("userId", mUserId);
-        startActivity(intent);
-
-    }
-
     public String getUserId()   {
         return mUserId;
-    }
-
-    public void setUserId(String userId) {
-        this.mUserId = userId;
     }
 }
