@@ -32,15 +32,15 @@
         <!--android:background="#80000000"-->
         <!--android:textSize="68dp" />-->
 
-    <Button
-        android:id="@+id/button_new_timer"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="50dp"
-        android:onClick="newTimer"
-        android:text="New Timer" />
+    <!--<Button-->
+        <!--android:id="@+id/button_new_timer"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_alignParentBottom="true"-->
+        <!--android:layout_centerHorizontal="true"-->
+        <!--android:layout_marginBottom="50dp"-->
+        <!--android:onClick="newTimer"-->
+        <!--android:text="New Timer" />-->
 
     <TextView
         android:id="@+id/login_text"
