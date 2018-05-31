@@ -35,6 +35,7 @@ import edu.tacoma.uw.css.group7.e_time.video.Video;
  * and handles logun and swapping fragments in and out based on user activity.
  */
 public class MainActivity extends AppCompatActivity implements RecentFragment.OnListFragmentInteractionListener,
+                                                                FavoriteFragment.OnListFragmentInteractionListener,
                                                                 MainFragment.OnFragmentInteractionListener,
                                                                 newTimerFragment.OnFragmentInteractionListener {
 
@@ -154,7 +155,13 @@ public class MainActivity extends AppCompatActivity implements RecentFragment.On
                             getSupportFragmentManager().beginTransaction()
                                     .replace(R.id.content_frame, newTimerFragment)
                                     .commit();
-                        } else {
+                        } else if (item.getItemId() == R.id.nav_favorites) {
+                            FavoriteFragment favFrag = new FavoriteFragment();
+                            getSupportFragmentManager()
+                                    .beginTransaction()
+                                    .replace(R.id.content_frame, favFrag)
+                                    .commit();
+                        }else {
                             Toast toast = Toast.makeText(getApplicationContext(), text, Toast.LENGTH_SHORT);
                             toast.show();
                         }

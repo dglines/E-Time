@@ -1,5 +1,6 @@
 package edu.tacoma.uw.css.group7.e_time;
 
+import android.app.Activity;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -123,7 +124,19 @@ public class TimerActivity extends YouTubeBaseActivity implements
         mBtnFavorite.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(that, "Unimplemented", Toast.LENGTH_LONG).show();
+                //Toast.makeText(that, "Unimplemented", Toast.LENGTH_LONG).show();
+                if (!mUserId.equals("")) {
+
+
+                    AddFavoriteTask task = new AddFavoriteTask();
+                    String favsURL = BASE_URL + "addFavorite.php?userId=" + mUserId
+                            + "&title=" + mCurrentVideoTitle
+                            + "&search=" + mSearchTerm
+                            + "&vidId=" + mCurrentVideoId
+                            + "&length=" + mDuration;
+                    task.execute(new String[]{favsURL.toString()});
+
+                }
             }
         });
         // Initializing the YouTube player
@@ -235,6 +248,26 @@ public class TimerActivity extends YouTubeBaseActivity implements
             }
         };
         mTimer.start();
+
+        // For the play button
+        mBtnPlay.setOnClickListener(this);
+        findViewById(R.id.btn_favorite).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+        findViewById(R.id.btn_return).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
+
+        // Initializing the YouTube player
+        youTubePlayerView.initialize(DEVELOPER_KEY, this);
+        // Enabling the button
+        mBtnPlay.setEnabled(true);
     }
 
     /**
@@ -547,6 +580,7 @@ public class TimerActivity extends YouTubeBaseActivity implements
         if (vidTitle.length() > 20)
             vidTitle = vidTitle.substring(0,17) + "...";
         recentDB.insertRecent(mCurrentVideoId, vidTitle, duration, currTime);
+
         return url;
     }
 
@@ -670,6 +704,56 @@ public class TimerActivity extends YouTubeBaseActivity implements
         @Override
         protected void onPostExecute(String result) {
             //Nothing to see here.
+        }
+    }
+    private final Activity that = this;
+    private class AddFavoriteTask extends AsyncTask<String, Void, String> {
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected String doInBackground(String... urls) {
+            String response = "";
+            HttpURLConnection urlConnection = null;
+            for (String url : urls) {
+                try {
+                    URL urlObject = new URL(url);
+                    urlConnection = (HttpURLConnection) urlObject.openConnection();
+
+                    InputStream content = urlConnection.getInputStream();
+
+                    BufferedReader buffer = new BufferedReader(new InputStreamReader(content));
+                    String s = "";
+                    while ((s = buffer.readLine()) != null) {
+                        response += s;
+                    }
+
+                } catch (Exception e) {
+                    response = "Unable to add recent entry, Reason: "
+                            + e.getMessage();
+                } finally {
+                    if (urlConnection != null)
+                        urlConnection.disconnect();
+                }
+
+            }
+            return response;
+        }
+
+
+        /**
+         * It checks to see if there was a problem with the URL(Network) which is when an
+         * exception is caught. It tries to call the parse Method and checks to see if it was successful.
+         * If not, it displays the exception.
+         *
+         * @param result
+         */
+        @Override
+        protected void onPostExecute(String result) {
+            //Nothing to see here.
+            Toast.makeText(that,"Added to Favorites", Toast.LENGTH_LONG).show();
         }
     }
 }

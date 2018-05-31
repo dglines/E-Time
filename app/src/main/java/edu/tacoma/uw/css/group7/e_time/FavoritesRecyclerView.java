@@ -6,7 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import edu.tacoma.uw.css.group7.e_time.RecentFragment.OnListFragmentInteractionListener;
+import edu.tacoma.uw.css.group7.e_time.FavoriteFragment.OnListFragmentInteractionListener;
 import edu.tacoma.uw.css.group7.e_time.video.Video;
 
 import java.util.List;
@@ -15,12 +15,12 @@ import java.util.List;
  * {@link RecyclerView.Adapter} that can display a {@link Video} and makes a call to the
  * specified {@link OnListFragmentInteractionListener}.
  */
-public class MyvideoRecyclerViewAdapter extends RecyclerView.Adapter<MyvideoRecyclerViewAdapter.ViewHolder> {
+public class FavoritesRecyclerView extends RecyclerView.Adapter<FavoritesRecyclerView.ViewHolder> {
 
     private final List<Video> mValues;
     private final OnListFragmentInteractionListener mListener;
 
-    public MyvideoRecyclerViewAdapter(List<Video> items, OnListFragmentInteractionListener listener) {
+    public FavoritesRecyclerView(List<Video> items, OnListFragmentInteractionListener listener) {
         mValues = items;
         mListener = listener;
     }
@@ -37,7 +37,7 @@ public class MyvideoRecyclerViewAdapter extends RecyclerView.Adapter<MyvideoRecy
         holder.mItem = mValues.get(position);
         holder.mIdView.setText(mValues.get(position).getTitle());
         int remaining = Integer.parseInt(mValues.get(position).getRemaining()) / 1000;
-        holder.mContentView.setText(remaining + " sec remaining");
+        holder.mContentView.setText(remaining + " sec" );
 
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
@@ -54,7 +54,10 @@ public class MyvideoRecyclerViewAdapter extends RecyclerView.Adapter<MyvideoRecy
 
     @Override
     public int getItemCount() {
-        return mValues.size();
+        if (!(mValues == null)) {
+            return mValues.size();
+        }
+        return 0;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
