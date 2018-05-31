@@ -108,7 +108,7 @@ public class MainActivity extends AppCompatActivity implements RecentFragment.On
 
         // navigation menu
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        NavigationView navView = findViewById(R.id.nav_view);           // checked
+        final NavigationView navView = findViewById(R.id.nav_view);           // checked
         navView.setNavigationItemSelectedListener(
                 new NavigationView.OnNavigationItemSelectedListener() {
                     @Override
@@ -129,6 +129,7 @@ public class MainActivity extends AppCompatActivity implements RecentFragment.On
                         } else if (item.getItemId() == R.id.log_In) {
                             mSharedPreferences = getSharedPreferences(getString(R.string.LOGIN_PREFS)
                                     , Context.MODE_PRIVATE);
+                            navView.getMenu().getItem(4).setTitle("Log Out");
 //                            if (mSharedPreferences.getBoolean(R.string.LOGGEDIN)) {
 //
 //                            }

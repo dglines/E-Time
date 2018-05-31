@@ -109,8 +109,6 @@ public class MainFragment extends Fragment {
 
         return v;
     }
-
-
     /**
      * Called when a fragment is first attached to its context.
      * {@link #onCreate(Bundle)} will be called after this.

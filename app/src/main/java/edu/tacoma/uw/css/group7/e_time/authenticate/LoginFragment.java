@@ -4,6 +4,7 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.util.Log;
@@ -254,6 +255,7 @@ public class LoginFragment extends Fragment {
             }
 
 // Everything is good, show the list of courses.
+
                 if (!mRecentList.isEmpty()) {
                     if (mRecentDB == null) {
                         mRecentDB = new RecentDB(mContext);
@@ -330,6 +332,8 @@ public class LoginFragment extends Fragment {
                             , Toast.LENGTH_LONG)
                             .show();
                     mListener.login(username, pwd);
+//                    NavigationView navView = getActivity().findViewById(R.id.nav_view);
+//                    navView.getMenu().getItem(4).setTitle("Log out");
                 } else if (status.equals("registered")) {
                     Toast.makeText(getApplicationContext(), "Please Create Account"
                             , Toast.LENGTH_LONG)
