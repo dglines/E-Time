@@ -162,8 +162,8 @@ public class MainActivity extends AppCompatActivity implements RecentFragment.On
                                     .replace(R.id.content_frame, favFrag)
                                     .commit();
                         }else {
-                            Toast toast = Toast.makeText(getApplicationContext(), text, Toast.LENGTH_SHORT);
-                            toast.show();
+//                            Toast toast = Toast.makeText(getApplicationContext(), text, Toast.LENGTH_SHORT);
+//                            toast.show();
                         }
                         return true;
                     }
@@ -216,8 +216,8 @@ public class MainActivity extends AppCompatActivity implements RecentFragment.On
         // simulate passing information to timer activity or fragment
 
         //do not click super fast plz
-        Toast toast = Toast.makeText(getApplicationContext(), item.getVidId(), Toast.LENGTH_LONG);
-        toast.show();
+        //Toast toast = Toast.makeText(getApplicationContext(), item.getVidId(), Toast.LENGTH_LONG);
+        //toast.show();
         Intent intent = new Intent(this, TimerActivity.class);
 
         intent.putExtra("vidId", item.getVidId());

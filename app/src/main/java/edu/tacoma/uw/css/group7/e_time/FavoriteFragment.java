@@ -217,16 +217,16 @@ public class FavoriteFragment extends Fragment {
             // Log.i(TAG, "onPostExecute");
 
             if (result.startsWith("{\"result")) {
-                Toast.makeText(getActivity().getApplicationContext(), result, Toast.LENGTH_LONG)
-                        .show();
+//                Toast.makeText(getActivity().getApplicationContext(), result, Toast.LENGTH_LONG)
+//                        .show();
                 return;
             }
 
             try {
                 mFavoritesList = Video.parseVideoJSON(result);
             } catch (JSONException e) {
-                Toast.makeText(getActivity().getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT)
-                        .show();
+//                Toast.makeText(getActivity().getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT)
+//                        .show();
                 return;
             }
 

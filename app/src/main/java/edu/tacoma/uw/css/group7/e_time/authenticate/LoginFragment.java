@@ -152,7 +152,7 @@ public class LoginFragment extends Fragment {
     private String buildRecentURL(String userID){
         StringBuilder sb = new StringBuilder(RECENTSDB_URL);
         sb.append("&userId=" + userID);
-        Toast.makeText(getActivity(), sb.toString(), Toast.LENGTH_LONG);
+        //Toast.makeText(getActivity(), sb.toString(), Toast.LENGTH_LONG);
         Log.e("Recent", sb.toString());
         return sb.toString();
     }
@@ -240,16 +240,16 @@ public class LoginFragment extends Fragment {
 
 
             if (result.startsWith("Unable to")) {
-                Toast.makeText(getActivity().getApplicationContext(), result, Toast.LENGTH_LONG)
-                        .show();
+//                Toast.makeText(getActivity().getApplicationContext(), result, Toast.LENGTH_LONG)
+//                        .show();
                 return;
             }
             try {
                 mRecentList = Video.parseVideoJSON(result);
             }
             catch (JSONException e) {
-                Toast.makeText(getActivity().getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG)
-                        .show();
+//                Toast.makeText(getActivity().getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG)
+//                        .show();
                 return;
             }
 
