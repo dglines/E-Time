@@ -218,7 +218,19 @@ public class TimerActivity extends YouTubeBaseActivity implements
         mBtnFavorite.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(that, "Unimplemented", Toast.LENGTH_LONG).show();
+                //Toast.makeText(that, "Unimplemented", Toast.LENGTH_LONG).show();
+                if (!mUserId.equals("")) {
+
+
+                    AddFavoriteTask task = new AddFavoriteTask();
+                    String favsURL = BASE_URL + "addFavorite.php?userId=" + mUserId
+                            + "&title=" + currentVideoTitle
+                            + "&search=" + mSearchTerm
+                            + "&vidId=" + currentVideoId
+                            + "&length=" + mDuration;
+                    task.execute(new String[]{favsURL.toString()});
+
+                }
             }
         });
         // Initializing the YouTube player
@@ -536,7 +548,8 @@ public class TimerActivity extends YouTubeBaseActivity implements
         RecentDB recentDB = RecentFragment.getRecentDB();
         String duration = "" + mDuration;
         String currTime = "" + mCurrentTime;
-        recentDB.insertRecent(currentVideoId, currentVideoTitle, duration, currTime);
+        if (recentDB != null)
+            recentDB.insertRecent(currentVideoId, currentVideoTitle, duration, currTime);
 
         //Toast.makeText(getApplicationContext(), url, Toast.LENGTH_LONG).show();
         return url;
@@ -618,6 +631,55 @@ public class TimerActivity extends YouTubeBaseActivity implements
 
     private class AddRecentTask extends AsyncTask<String, Void, String> {
 
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected String doInBackground(String... urls) {
+            String response = "";
+            HttpURLConnection urlConnection = null;
+            for (String url : urls) {
+                try {
+                    URL urlObject = new URL(url);
+                    urlConnection = (HttpURLConnection) urlObject.openConnection();
+
+                    InputStream content = urlConnection.getInputStream();
+
+                    BufferedReader buffer = new BufferedReader(new InputStreamReader(content));
+                    String s = "";
+                    while ((s = buffer.readLine()) != null) {
+                        response += s;
+                    }
+
+                } catch (Exception e) {
+                    response = "Unable to add recent entry, Reason: "
+                            + e.getMessage();
+                } finally {
+                    if (urlConnection != null)
+                        urlConnection.disconnect();
+                }
+
+            }
+            return response;
+        }
+
+
+        /**
+         * It checks to see if there was a problem with the URL(Network) which is when an
+         * exception is caught. It tries to call the parse Method and checks to see if it was successful.
+         * If not, it displays the exception.
+         *
+         * @param result
+         */
+        @Override
+        protected void onPostExecute(String result) {
+            //Nothing to see here.
+        }
+    }
+
+    private class AddFavoriteTask extends AsyncTask<String, Void, String> {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();

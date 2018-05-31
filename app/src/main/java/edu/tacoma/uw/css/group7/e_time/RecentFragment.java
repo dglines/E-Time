@@ -113,11 +113,10 @@ public class RecentFragment extends Fragment {
 
             mRecentsList = mRecentDB.getRecents();
 
-            Log.e("THIS GUY", mRecentsList.toString());
             mRecyclerView.setAdapter(new MyvideoRecyclerViewAdapter(mRecentsList, mListener));
             // meneka says to remove this
            // mRecyclerView.setAdapter(new MyvideoRecyclerViewAdapter(mRecentsList, mListener));
-            Toast.makeText(context,BASE_URL + ((MainActivity)getActivity()).getUserId(), Toast.LENGTH_LONG).show();
+            //Toast.makeText(context,BASE_URL + ((MainActivity)getActivity()).getUserId(), Toast.LENGTH_LONG).show();
         }
         return view;
     }
