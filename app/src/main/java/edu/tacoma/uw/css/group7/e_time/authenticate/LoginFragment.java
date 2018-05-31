@@ -4,6 +4,7 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.util.Log;
@@ -261,7 +262,6 @@ public class LoginFragment extends Fragment {
                 //Delete old data so that you can refresh the local db w/ network data.
                 //mRecentDB.deleteRecents();  #### this caused problems with table not existing
                 //also, add to local db
-                Log.e("These guys", mRecentList.toString());
                 for (int i = 0; i < mRecentList.size(); i++) {
                     Video video = mRecentList.get(i);
                     if (!mRecentDB.insertRecent(video.getVidId(), video.getTitle(),
@@ -326,6 +326,8 @@ public class LoginFragment extends Fragment {
                             , Toast.LENGTH_LONG)
                             .show();
                     mListener.login(username, pwd);
+//                    NavigationView navView = getActivity().findViewById(R.id.nav_view);
+//                    navView.getMenu().getItem(4).setTitle("Log out");
                 } else if (status.equals("registered")) {
                     Toast.makeText(getApplicationContext(), "Please Create Account"
                             , Toast.LENGTH_LONG)

@@ -22,15 +22,12 @@ import android.widget.Toast;
  * create an instance of this fragment.
  */
 public class newTimerFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
     private static final String SEARCH_TERM = "searchTerm";
     private static final String LENGTH = "length";
 
-    // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
 
@@ -74,7 +71,6 @@ public class newTimerFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-
         View v = inflater.inflate(R.layout.fragment_new_timer, container, false);
         mEditDuration = (EditText)v.findViewById(R.id.duration);
         mEditSearchTerm = (EditText)v.findViewById(R.id.search_term);
@@ -89,8 +85,9 @@ public class newTimerFragment extends Fragment {
                 try {
                     duration = Integer.parseInt(lengthString);
                 }catch(NumberFormatException e){
-                    Toast.makeText(v.getContext(), "Invalid input!\n" + "video length: " + duration + " term: " + searchTerm
-                            , Toast.LENGTH_LONG).show();
+                    Toast.makeText(v.getContext(), "Invalid input!\n" + "video length: "
+                                    + duration + " term: " + searchTerm
+                                    , Toast.LENGTH_LONG).show();
                     return;
                 }
                 
@@ -100,13 +97,6 @@ public class newTimerFragment extends Fragment {
         return v;
     }
 
-
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
 
     @Override
     public void onAttach(Context context) {
@@ -136,9 +126,15 @@ public class newTimerFragment extends Fragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
 
+        /**
+         * set a new timer with specified length and search term
+         * @param lenTitle holds "length"
+         * @param length length of the timer
+         * @param termTitle holds title of search term
+         * @param searchTerm the search term
+         */
         void setTimer(String lenTitle, int length, String termTitle, String searchTerm);
     }
 }

@@ -1,15 +1,12 @@
 package edu.tacoma.uw.css.group7.e_time;
 
 import android.content.Context;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,8 +35,6 @@ public class RecentFragment extends Fragment {
 
 
     private static final String ARG_COLUMN_COUNT = "column-count";
-    private static final String RECENT_URL = "http://olivep3.000webhostapp.com/Android/recentList.php?cmd=recents&userId=test";
-    private static final String BASE_URL = "http://olivep3.000webhostapp.com/Android/recentList.php?cmd=recents&userId=";
 
     private int mColumnCount = 1;
     private OnListFragmentInteractionListener mListener;
@@ -103,20 +98,12 @@ public class RecentFragment extends Fragment {
                 mRecyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
 
-            // code to pull recents list from web service
-//           RecentAsyncTask recentAsyncTask = new RecentAsyncTask();
-//            recentAsyncTask.execute(new String[]{BASE_URL + ((MainActivity)getActivity()).getUserId()});
-
+            // pull recents from SQLite DB
             if (mRecentDB == null) {
                 mRecentDB = new RecentDB(getActivity());
             }
-
             mRecentsList = mRecentDB.getRecents();
-
             mRecyclerView.setAdapter(new MyvideoRecyclerViewAdapter(mRecentsList, mListener));
-            // meneka says to remove this
-           // mRecyclerView.setAdapter(new MyvideoRecyclerViewAdapter(mRecentsList, mListener));
-            //Toast.makeText(context,BASE_URL + ((MainActivity)getActivity()).getUserId(), Toast.LENGTH_LONG).show();
         }
         return view;
     }
@@ -227,7 +214,7 @@ public class RecentFragment extends Fragment {
                 return;
             }
 
-// Everything is good, show the list of courses.
+            // show the list of courses.
             if (!mRecentsList.isEmpty()) {
                 mRecyclerView.setAdapter(new MyvideoRecyclerViewAdapter(mRecentsList, mListener));
             }

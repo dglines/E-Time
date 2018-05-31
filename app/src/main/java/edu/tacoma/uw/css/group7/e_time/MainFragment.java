@@ -40,8 +40,6 @@ public class MainFragment extends Fragment {
 
     private TextView mLoginText;
 
-    private CallbackManager callbackManager;
-
     private OnFragmentInteractionListener mListener;
 
     private Thread mClock;
@@ -142,13 +140,6 @@ public class MainFragment extends Fragment {
         mClock.start();
 
         return v;
-    }
-
-
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
     }
 
     /**
