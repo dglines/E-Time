@@ -18,6 +18,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="#23272A"
     android:gravity="center">
 
     <TextView
@@ -26,6 +27,7 @@
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
         android:paddingTop="5dp"
+        android:textColor="#FFFFFF"
         android:singleLine="true" />
 
     <com.google.android.youtube.player.YouTubePlayerView
@@ -39,6 +41,7 @@
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
         android:paddingTop="5dp"
+        android:textColor="#FFFFFF"
         android:singleLine="true" />
 
     <LinearLayout
@@ -72,7 +75,7 @@
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="90dp"
-            android:textColor="@android:color/black"
+            android:textColor="#FFFFFF"
             android:textSize="68dp" />
     </RelativeLayout>
 

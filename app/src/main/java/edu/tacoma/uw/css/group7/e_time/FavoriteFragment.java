@@ -1,6 +1,7 @@
 package edu.tacoma.uw.css.group7.e_time;
 
 import android.content.Context;
+
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
@@ -14,7 +15,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
-
 import org.json.JSONException;
 
 import java.io.BufferedReader;
@@ -26,6 +26,8 @@ import java.util.List;
 
 import edu.tacoma.uw.css.group7.e_time.data.RecentDB;
 import edu.tacoma.uw.css.group7.e_time.video.Video;
+
+import org.json.JSONException;
 
 
 /**
@@ -65,8 +67,9 @@ public class FavoriteFragment extends Fragment {
 
     /**
      * Called to do initial creation of a fragment.
+     *
      * @param savedInstanceState If non-null, this fragment is being re-constructed
-     * from a previous saved state as given here.
+     *                           from a previous saved state as given here.
      */
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -79,13 +82,14 @@ public class FavoriteFragment extends Fragment {
 
     /**
      * Called to have the fragment instantiate its user interface view.
-     * @param inflater The LayoutInflater object that can be used to inflate
-     * any views in the fragment,
-     * @param container If non-null, this is the parent view that the fragment's
-     * UI should be attached to.  The fragment should not add the view itself,
-     * but this can be used to generate the LayoutParams of the view.
+     *
+     * @param inflater           The LayoutInflater object that can be used to inflate
+     *                           any views in the fragment,
+     * @param container          If non-null, this is the parent view that the fragment's
+     *                           UI should be attached to.  The fragment should not add the view itself,
+     *                           but this can be used to generate the LayoutParams of the view.
      * @param savedInstanceState If non-null, this fragment is being re-constructed
-     * from a previous saved state as given here.
+     *                           from a previous saved state as given here.
      * @return
      */
     @Override
@@ -96,7 +100,7 @@ public class FavoriteFragment extends Fragment {
         // Set the adapter
         if (view instanceof RecyclerView) {
             Context context = view.getContext();
-            mRecyclerView  = (RecyclerView) view;
+            mRecyclerView = (RecyclerView) view;
             if (mColumnCount <= 1) {
                 mRecyclerView.setLayoutManager(new LinearLayoutManager(context));
             } else {
@@ -105,7 +109,7 @@ public class FavoriteFragment extends Fragment {
 
             // code to pull recents list from web service
             FavoriteAsyncTask favoriteAsyncTask = new FavoriteAsyncTask();
-            favoriteAsyncTask.execute(new String[]{BASE_URL + ((MainActivity)getActivity()).getUserId()});
+            favoriteAsyncTask.execute(new String[]{BASE_URL + ((MainActivity) getActivity()).getUserId()});
 
 //            if (mRecentDB == null) {
 //                mRecentDB = new RecentDB(getActivity());
@@ -172,6 +176,7 @@ public class FavoriteFragment extends Fragment {
 
         /**
          * required for AsyncTask.  pulls list of recent timers from web serviec.
+         *
          * @param urls
          * @return
          */
@@ -191,11 +196,10 @@ public class FavoriteFragment extends Fragment {
                         response += s;
                     }
 
-                } catch(Exception e) {
+                } catch (Exception e) {
                     response = "Unable to download the list of favorites, Reason:" + e.getMessage();
 
-                }
-                finally {
+                } finally {
                     if (urlConnection != null)
                         urlConnection.disconnect();
                 }
@@ -205,6 +209,7 @@ public class FavoriteFragment extends Fragment {
 
         /**
          * Runs on the UI thread after {@link #doInBackground}.
+         *
          * @param result the value returned by {@link #doInBackground}.
          */
         @Override
@@ -212,17 +217,16 @@ public class FavoriteFragment extends Fragment {
             // Log.i(TAG, "onPostExecute");
 
             if (result.startsWith("{\"result")) {
-                Toast.makeText(getActivity().getApplicationContext(), result, Toast.LENGTH_LONG)
-                        .show();
+//                Toast.makeText(getActivity().getApplicationContext(), result, Toast.LENGTH_LONG)
+//                        .show();
                 return;
             }
 
             try {
                 mFavoritesList = Video.parseVideoJSON(result);
-            }
-            catch (JSONException e) {
-                Toast.makeText(getActivity().getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT)
-                        .show();
+            } catch (JSONException e) {
+//                Toast.makeText(getActivity().getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT)
+//                        .show();
                 return;
             }
 

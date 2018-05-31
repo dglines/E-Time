@@ -6,6 +6,7 @@
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:textColor="#FFFFFF"
     android:fitsSystemWindows="true">
 
 
@@ -15,6 +16,7 @@
         android:id="@+id/content_frame"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:textColor="#FFFFFF"
         tools:context="edu.tacoma.uw.css.group7.e_time.MainActivity">
 
 
@@ -37,13 +39,15 @@
         android:layout_height="match_parent"
         android:layout_gravity="start"
         android:fitsSystemWindows="true"
+        android:background="#50000000"
         app:menu="@menu/drawer"
+        app:itemTextColor="#FFFFFF"
         app:headerLayout="@layout/nav_header">
         <ImageView
             android:id="@+id/image"
-            android:layout_width="300dp"
+            android:layout_width="match_parent"
             android:layout_height="300dp"
-            android:src="@drawable/logo"/>
+            android:src="@drawable/etime"/>
     </android.support.design.widget.NavigationView>
 
 </android.support.v4.widget.DrawerLayout>

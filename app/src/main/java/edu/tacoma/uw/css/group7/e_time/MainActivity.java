@@ -1,6 +1,7 @@
 package edu.tacoma.uw.css.group7.e_time;
 
 import android.app.Activity;
+import android.content.ClipData;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -73,7 +74,10 @@ public class MainActivity extends AppCompatActivity implements RecentFragment.On
         } else  {
             mLoggedIn = false;
         }
-
+        if (mLoggedIn)
+            ((NavigationView)findViewById(R.id.nav_view)).getMenu().findItem(R.id.log_In).setTitle("Log out");
+        else
+            ((NavigationView)findViewById(R.id.nav_view)).getMenu().findItem(R.id.log_In).setTitle("Login");
         // begin by launching home fragment
         MainFragment mainFragment = new MainFragment();
         getSupportFragmentManager()
@@ -120,7 +124,6 @@ public class MainActivity extends AppCompatActivity implements RecentFragment.On
 
                         // close drawer if item selected
                         mDrawerLayout.closeDrawers();
-
                         // we can add code here to swap FRAGMENTS, or maybe activities
                         // based on the item selected
                         // here's a Toast to demonstrate this:
@@ -160,8 +163,8 @@ public class MainActivity extends AppCompatActivity implements RecentFragment.On
                                     .replace(R.id.content_frame, favFrag)
                                     .commit();
                         }else {
-                            Toast toast = Toast.makeText(getApplicationContext(), text, Toast.LENGTH_SHORT);
-                            toast.show();
+//                            Toast toast = Toast.makeText(getApplicationContext(), text, Toast.LENGTH_SHORT);
+//                            toast.show();
                         }
                         return true;
                     }
@@ -175,6 +178,7 @@ public class MainActivity extends AppCompatActivity implements RecentFragment.On
         mToggle.syncState();
         // enable a back button
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
 
     }
 
@@ -213,8 +217,8 @@ public class MainActivity extends AppCompatActivity implements RecentFragment.On
         // simulate passing information to timer activity or fragment
 
         //do not click super fast plz
-        Toast toast = Toast.makeText(getApplicationContext(), item.getVidId(), Toast.LENGTH_LONG);
-        toast.show();
+        //Toast toast = Toast.makeText(getApplicationContext(), item.getVidId(), Toast.LENGTH_LONG);
+        //toast.show();
         Intent intent = new Intent(this, TimerActivity.class);
 
         intent.putExtra("vidId", item.getVidId());
