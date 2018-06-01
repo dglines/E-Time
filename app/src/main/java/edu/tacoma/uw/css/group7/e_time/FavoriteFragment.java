@@ -1,40 +1,30 @@
 package edu.tacoma.uw.css.group7.e_time;
 
 import android.content.Context;
-
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 import org.json.JSONException;
-
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
-
-import edu.tacoma.uw.css.group7.e_time.data.RecentDB;
 import edu.tacoma.uw.css.group7.e_time.video.Video;
-
-import org.json.JSONException;
 
 
 /**
- * A fragment representing a list of recent video timers.
- * <p/>
- * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
- * interface.
+ * A Fragment that contains a list of favorites associated with the currently logged in user.
+ *
+ * @author David Glines, Parker Olive
+ * @version 5/30/2108
  */
 public class FavoriteFragment extends Fragment {
 
@@ -47,7 +37,6 @@ public class FavoriteFragment extends Fragment {
     private OnListFragmentInteractionListener mListener;
     private List<Video> mFavoritesList;
     private RecyclerView mRecyclerView;
-    //private static RecentDB mRecentDB;
 
 
     /**

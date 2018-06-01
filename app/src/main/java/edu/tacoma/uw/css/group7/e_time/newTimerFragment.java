@@ -1,7 +1,6 @@
 package edu.tacoma.uw.css.group7.e_time;
 
 import android.content.Context;
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -14,12 +13,9 @@ import android.widget.Toast;
 
 
 /**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link newTimerFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link newTimerFragment#newInstance} factory method to
- * create an instance of this fragment.
+ * A fragment used to get information from the user for use by the TimerActivity.
+ *
+ * @author David Glines, Alexander Reid
  */
 public class newTimerFragment extends Fragment {
     private static final String ARG_PARAM1 = "param1";
@@ -48,7 +44,6 @@ public class newTimerFragment extends Fragment {
      * @param param2 Parameter 2.
      * @return A new instance of fragment newTimerFragment.
      */
-    // TODO: Rename and change types and number of parameters
     public static newTimerFragment newInstance(String param1, String param2) {
         newTimerFragment fragment = new newTimerFragment();
         Bundle args = new Bundle();

@@ -13,6 +13,13 @@ import java.util.List;
 import edu.tacoma.uw.css.group7.e_time.R;
 import edu.tacoma.uw.css.group7.e_time.video.Video;
 
+/**
+ * The RecentDB class handles all the communication to the SQLite database used to locally store
+ * data for this app.
+ *
+ * @author David Glines
+ * @version 5/30/2018
+ */
 public class RecentDB {
     public static final int DB_VERSION = 1;
     public static final String DB_NAME = "Recent.db";

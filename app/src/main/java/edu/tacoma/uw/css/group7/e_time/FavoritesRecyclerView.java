@@ -12,14 +12,21 @@ import edu.tacoma.uw.css.group7.e_time.video.Video;
 import java.util.List;
 
 /**
- * {@link RecyclerView.Adapter} that can display a {@link Video} and makes a call to the
- * specified {@link OnListFragmentInteractionListener}.
+ * The recycler view adapter that is used to display favorited videos and handle user interactions with them.
+ *
+ * @author David Glines
+ * @version 5/30/2108
  */
 public class FavoritesRecyclerView extends RecyclerView.Adapter<FavoritesRecyclerView.ViewHolder> {
 
     private final List<Video> mValues;
     private final OnListFragmentInteractionListener mListener;
 
+    /**
+     * Constructor that sets the member variables for this view.
+     * @param items
+     * @param listener
+     */
     public FavoritesRecyclerView(List<Video> items, OnListFragmentInteractionListener listener) {
         mValues = items;
         mListener = listener;
@@ -60,6 +67,9 @@ public class FavoritesRecyclerView extends RecyclerView.Adapter<FavoritesRecycle
         return 0;
     }
 
+    /**
+     * A holder used to contain a list item.
+     */
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
         public final TextView mIdView;

@@ -33,22 +33,19 @@ import edu.tacoma.uw.css.group7.e_time.video.Video;
 import static com.facebook.FacebookSdk.getApplicationContext;
 
 /**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link LoginFragment.LoginInteractionListener} interface
- * to handle interaction events.
- * Use the {@link LoginFragment#newInstance} factory method to
- * create an instance of this fragment.
+ * LoginFragment is a fragment used with SigninActivity.  It handles receiving login information
+ * from the user and communicating with the online database for authentication.
+ *
+ * @author Parker Olive, David Glines
+ * @version 5/31/2018
  */
 public class LoginFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
     private static final String DB_URL = "https://olivep3.000webhostapp.com/Android/Login.php?";
     private static final String RECENTSDB_URL = "http://olivep3.000webhostapp.com/Android/recentList.php?cmd=recents";
 
-    // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
     protected EditText emailText;
@@ -75,7 +72,6 @@ public class LoginFragment extends Fragment {
      * @param param2 Parameter 2.
      * @return A new instance of fragment LoginFragment.
      */
-    // TODO: Rename and change types and number of parameters
     public static LoginFragment newInstance(String param1, String param2) {
         LoginFragment fragment = new LoginFragment();
         Bundle args = new Bundle();
@@ -126,7 +122,6 @@ public class LoginFragment extends Fragment {
                     pwdText.requestFocus();
                 }
                 else {
-                    // ToDo: authenticate user based on existence in DB and pwd match
                     String url = buildURL(username, pwd);
                     AuthenticateTask task = new AuthenticateTask();
                     task.execute(new String[]{url.toString()});
@@ -143,6 +138,12 @@ public class LoginFragment extends Fragment {
         return v;
     }
 
+    /**
+     * Builds a URL String using the provided username and password.
+     * @param username - Username of the user
+     * @param pwd - Password
+     * @return String url
+     */
     private String buildURL(String username, String pwd){
         StringBuilder sb = new StringBuilder(DB_URL);
         sb.append("userId=" + username);
@@ -150,6 +151,11 @@ public class LoginFragment extends Fragment {
         return sb.toString();
     }
 
+    /**
+     * Builds a URL String used to receive recent video information related to the user.
+     * @param userID - Username
+     * @return String url
+     */
     private String buildRecentURL(String userID){
         StringBuilder sb = new StringBuilder(RECENTSDB_URL);
         sb.append("&userId=" + userID);
@@ -199,7 +205,7 @@ public class LoginFragment extends Fragment {
         private List<Video> mRecentList;
 
         /**
-         * required for AsyncTask.  pulls list of recent timers from web serviec.
+         * required for AsyncTask.  pulls list of recent timers from web service.
          * @param urls
          * @return
          */
@@ -274,11 +280,16 @@ public class LoginFragment extends Fragment {
                             Log.e("Tried to use insert.", "IT WAS NOT VERY EFFECTIVE!");
                         }
                     }
-                    //  mRecyclerView.setAdapter(new MyvideoRecyclerViewAdapter(mRecentsList, mListener));
+                    //  mRecyclerView.setAdapter(new MyVideoRecyclerViewAdapter(mRecentsList, mListener));
                 }
 
         }
     }
+
+    /**
+     * The AuthenticateTask is an AsyncTask used to authenticate the user information using an
+     * online database.
+     */
     private class AuthenticateTask extends AsyncTask<String, Void, String> {
 
 

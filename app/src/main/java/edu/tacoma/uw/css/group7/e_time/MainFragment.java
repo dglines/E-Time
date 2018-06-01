@@ -14,12 +14,10 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 /**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link MainFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link MainFragment#newInstance} factory method to
- * create an instance of this fragment.
+ * MainFragment contains the analog and digital clock displayed on the main activity.
+ *
+ * @author Alexander Reid
+ * @version 5/29/2018
  */
 public class MainFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -29,9 +27,9 @@ public class MainFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-
     private Activity mActivity;
 
+    // The textview that displays the currently logged in user.
     private TextView mLoginText;
 
     private OnFragmentInteractionListener mListener;
@@ -49,7 +47,6 @@ public class MainFragment extends Fragment {
      * @param param2 Parameter 2.
      * @return A new instance of fragment MainFragment.
      */
-    // TODO: Rename and change types and number of parameters
     public static MainFragment newInstance(String param1, String param2) {
         MainFragment fragment = new MainFragment();
         Bundle args = new Bundle();

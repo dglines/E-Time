@@ -12,8 +12,6 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MenuItem;
-import android.view.View;
-
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
@@ -25,8 +23,10 @@ import edu.tacoma.uw.css.group7.e_time.authenticate.SignInActivity;
 import edu.tacoma.uw.css.group7.e_time.video.Video;
 
 /**
- * This class serves as navigation by using the drawer view
- * and handles logun and swapping fragments in and out based on user activity.
+ * The main activity of the E-Time app. Serves as a container for several fragments used within the app
+ * and contains a drawer that is used to switch between these fragments.
+ *
+ * @author David Glines, Parker Olive, Alexander Reid
  */
 public class MainActivity extends AppCompatActivity implements RecentFragment.OnListFragmentInteractionListener,
                                                                 FavoriteFragment.OnListFragmentInteractionListener,
@@ -39,13 +39,13 @@ public class MainActivity extends AppCompatActivity implements RecentFragment.On
     // works as a listener for the drawer
     private ActionBarDrawerToggle mToggle;
 
-    private CallbackManager callbackManager;
+    private CallbackManager mCallbackManager;
     private SharedPreferences mSharedPreferences;
 
-    protected boolean mLoggedIn;
+    private boolean mLoggedIn;
     private Activity that = this;
 
-    protected String mUserId = "";
+    private String mUserId = "";
 
 
     /**
@@ -57,8 +57,8 @@ public class MainActivity extends AppCompatActivity implements RecentFragment.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
-        String extra = getIntent().getStringExtra("userId");
+        mSharedPreferences = this.getSharedPreferences("edu.tacoma.uw.css.group7.e_time", Context.MODE_PRIVATE);
+        String extra = mSharedPreferences.getString("username", "");
 
         if (extra != null && extra.length() > 0)    {
             mUserId = extra;
@@ -81,8 +81,8 @@ public class MainActivity extends AppCompatActivity implements RecentFragment.On
         // fb says to use this but idk why
         mLoggedIn = AccessToken.getCurrentAccessToken() == null;
 
-        callbackManager = CallbackManager.Factory.create();
-        LoginManager.getInstance().registerCallback(callbackManager,
+        mCallbackManager = CallbackManager.Factory.create();
+        LoginManager.getInstance().registerCallback(mCallbackManager,
                 new FacebookCallback<LoginResult>() {
                     @Override
                     public void onSuccess(LoginResult loginResult) {
@@ -127,12 +127,6 @@ public class MainActivity extends AppCompatActivity implements RecentFragment.On
                                     .replace(R.id.content_frame, recentsFragment)
                                     .commit();
                         } else if (item.getItemId() == R.id.log_In) {
-                            mSharedPreferences = getSharedPreferences(getString(R.string.LOGIN_PREFS)
-                                    , Context.MODE_PRIVATE);
-                            navView.getMenu().getItem(4).setTitle("Log Out");
-//                            if (mSharedPreferences.getBoolean(R.string.LOGGEDIN)) {
-//
-//                            }
                             Intent intent = new Intent(that, SignInActivity.class);
                             startActivity(intent);
                             //loginButton.performClick();
@@ -175,14 +169,14 @@ public class MainActivity extends AppCompatActivity implements RecentFragment.On
     }
 
     /**
-     *  implemented for facebook login functionality.
+     *  Implemented for facebook login functionality. No longer in use.
      * @param requestCode
      * @param resultCode
      * @param data
      */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        callbackManager.onActivityResult(requestCode, resultCode, data);
+        mCallbackManager.onActivityResult(requestCode, resultCode, data);
         super.onActivityResult(requestCode, resultCode, data);
     }
 
@@ -198,7 +192,7 @@ public class MainActivity extends AppCompatActivity implements RecentFragment.On
     }
 
     /**
-     * Alows users to make selections on a list fragment.
+     * Allows users to make selections on a list fragment.
      * used for the recent timers fragment.  Will be used in the future
      * for the favorites fragment as well.
      * @param item a reference to the item that was selected.

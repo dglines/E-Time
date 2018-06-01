@@ -12,15 +12,22 @@ import edu.tacoma.uw.css.group7.e_time.video.Video;
 import java.util.List;
 
 /**
- * {@link RecyclerView.Adapter} that can display a {@link Video} and makes a call to the
- * specified {@link OnListFragmentInteractionListener}.
+ * The recycler view adapter that is used to display recent videos and handle user interactions with them.
+ *
+ * @author David Glines
+ * @version 5/30/2108
  */
-public class MyvideoRecyclerViewAdapter extends RecyclerView.Adapter<MyvideoRecyclerViewAdapter.ViewHolder> {
+public class MyVideoRecyclerViewAdapter extends RecyclerView.Adapter<MyVideoRecyclerViewAdapter.ViewHolder> {
 
     private final List<Video> mValues;
     private final OnListFragmentInteractionListener mListener;
 
-    public MyvideoRecyclerViewAdapter(List<Video> items, OnListFragmentInteractionListener listener) {
+    /**
+     * Constructor that sets the member variables for this view.
+     * @param items
+     * @param listener
+     */
+    public MyVideoRecyclerViewAdapter(List<Video> items, OnListFragmentInteractionListener listener) {
         mValues = items;
         mListener = listener;
     }
@@ -58,7 +65,9 @@ public class MyvideoRecyclerViewAdapter extends RecyclerView.Adapter<MyvideoRecy
     }
 
 
-    
+    /**
+     * A holder used to contain a list item.
+     */
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
         public final TextView mIdView;

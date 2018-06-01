@@ -202,7 +202,6 @@ public class TimerActivity extends YouTubeBaseActivity implements
         try {
             Object result = new SearchTask().execute().get();
         } catch (Exception e)   {
-            // REEEEE
         }
     }
 

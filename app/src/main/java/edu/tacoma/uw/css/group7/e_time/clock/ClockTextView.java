@@ -3,7 +3,6 @@ package edu.tacoma.uw.css.group7.e_time.clock;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
@@ -12,20 +11,23 @@ import android.view.View;
 
 import java.util.Calendar;
 
-import edu.tacoma.uw.css.group7.e_time.R;
-
+/**
+ * The ClockTextView is the digital clock display used for the MainFragment.  It displays the current
+ * time on the device and redraws every 500 milliseconds.  Created with the help from Sylvain
+ * Saurel's YouTube video tutorial on using Canvas 2D to draw an analog clock: https://www.youtube.com/watch?v=ybKgq6qqTeA
+ *
+ * @author Alexander Reid
+ * @version 5/29/2018
+ */
 public class ClockTextView extends View {
 
-    private int height, width = 0;
-    private int padding = 0;
-    private int fontSize = 0;
-    private int numeralSpacing = 0;
-    private int handTruncation, hourHandTruncation = 0;
-    private int radius = 0;
-    private Paint paint;
-    private boolean isInit;
-    private Rect rect = new Rect();
-    private String timeText = "";
+    private int mHeight, mWidth;
+    private int mFontSize = 0;
+    private Paint mPaint;
+    private boolean mIsInit;
+    private String mTimeText = "";
+    
+    //Default constructors
     public ClockTextView(Context context) {
         super(context);
     }
@@ -38,21 +40,23 @@ public class ClockTextView extends View {
         super(context, attrs, defStyleAttr);
     }
 
+    /**
+     * Initializes all the member variables necessary for the view.
+     */
     private void initClock() {
-        height = getHeight();
-        width = getWidth();
-        padding = numeralSpacing + 50;
-        fontSize = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 68,
+        mHeight = getHeight();
+        mWidth = getWidth();
+        mFontSize = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 68,
                 getResources().getDisplayMetrics());
 
-        int min = Math.min(height, width);
-        paint = new Paint();
-        isInit = true;
+        int min = Math.min(mHeight, mWidth);
+        mPaint = new Paint();
+        mIsInit = true;
     }
 
     @Override
     protected void onDraw(Canvas canvas)    {
-        if (!isInit)    {
+        if (!mIsInit)    {
             initClock();
         }
         drawTime(canvas);
@@ -61,17 +65,22 @@ public class ClockTextView extends View {
         invalidate();
     }
 
+    /**
+     * Draws the current time.
+     * @param canvas
+     */
     private void drawTime(Canvas canvas)    {
-        paint.reset();
+        mPaint.reset();
         Calendar c = Calendar.getInstance();
-        timeText = String.format("%02d:%02d", c.get(Calendar.HOUR_OF_DAY),c.get(Calendar.MINUTE));
+        //formatting the time to use two digits for the hours and minutes.
+        mTimeText = String.format("%02d:%02d", c.get(Calendar.HOUR_OF_DAY),c.get(Calendar.MINUTE));
 
-        paint.setTextSize(fontSize);
-        paint.setTextAlign(Paint.Align.CENTER);
-        paint.setTypeface(Typeface.create("Courier",Typeface.NORMAL));
-        paint.setColor(getResources().getColor(android.R.color.white));
+        mPaint.setTextSize(mFontSize);
+        mPaint.setTextAlign(Paint.Align.CENTER);
+        mPaint.setTypeface(Typeface.create("Courier",Typeface.NORMAL));
+        mPaint.setColor(getResources().getColor(android.R.color.white));
 
-        canvas.drawText(timeText, width/2, height, paint);
+        canvas.drawText(mTimeText, mWidth /2, mHeight, mPaint);
     }
 
 }

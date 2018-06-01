@@ -10,7 +10,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import org.json.JSONException;
 
@@ -103,7 +102,7 @@ public class RecentFragment extends Fragment {
                 mRecentDB = new RecentDB(getActivity());
             }
             mRecentsList = mRecentDB.getRecents();
-            mRecyclerView.setAdapter(new MyvideoRecyclerViewAdapter(mRecentsList, mListener));
+            mRecyclerView.setAdapter(new MyVideoRecyclerViewAdapter(mRecentsList, mListener));
         }
         return view;
     }
@@ -216,7 +215,7 @@ public class RecentFragment extends Fragment {
 
             // show the list of courses.
             if (!mRecentsList.isEmpty()) {
-                mRecyclerView.setAdapter(new MyvideoRecyclerViewAdapter(mRecentsList, mListener));
+                mRecyclerView.setAdapter(new MyVideoRecyclerViewAdapter(mRecentsList, mListener));
             }
         }
     }

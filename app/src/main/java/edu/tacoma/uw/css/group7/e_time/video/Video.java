@@ -8,6 +8,13 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The Video object is used to contain all the necessary information associated with a
+ * video selection for our app to work.
+ *
+ * @author David Glines, Alexander Reid, Parker Olive
+ * @version 5/30/2018
+ */
 public class Video implements Serializable {
     // constants
     public static final String VIDID = "vidId";
@@ -27,7 +34,6 @@ public class Video implements Serializable {
      * @param remaining the time remaining in the video.
      * @param title the title of the video.
      */
-
     public Video(String vidId, String title, String length, String remaining, String searchTerm) {
 
         mVidId = vidId;
@@ -54,6 +60,14 @@ public class Video implements Serializable {
 
     public String getSearchTerm() { return mSearchTerm; }
 
+    /**
+     * Parses a given JSON object that contains several videos and information related to them, then
+     * returns a List containing Video objects related to the information parsed.
+     *
+     * @param videoJSON
+     * @return List - Contains a list of Videos
+     * @throws JSONException
+     */
     public static List<Video> parseVideoJSON(String videoJSON) throws JSONException {
         List<Video> videoList = new ArrayList<Video>();
         if (videoJSON != null) {
